@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Running Order Animation Demo</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap">
+    </head>
+    <body>
+        <div id="controls" style="text-align: center; font-family: 'Montserrat', sans-serif; margin: 0 0 20px 0;">
+            <h1>Runner Animation <span id="version"></span></h1>
+            <label>
+                <span>RACE</span>
+                <input type="text" id="sharecode" value="06202308091500">
+            </label>
+            <button id="load" style="text-align: center; font-family: 'Montserrat', sans-serif">RUN</button>
+            <button id="stop" style="text-align: center; font-family: 'Montserrat', sans-serif">STOP</button>
+        </div>
+
+        <div id="container">
+            <table id="tbl">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th></th> <!--SILK -->
+                        <th>DT</th>
+                        <th>DS</th>
+                        <th>AS</th>
+                        <th>VS</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <div id="map"></div> 
+        </div>
+        
+        <link rel="stylesheet" href=" https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css">
+        <script src="https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/5.1.5/turf.js"></script>
+
+        <script src="scripts.js"></script>
+    </body> 
+</html> 
+
+

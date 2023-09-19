@@ -1,0 +1,361 @@
+:root {
+    --tpd-orange: #ff6600;
+    --white: #FFF;
+    --green: #00a15d;
+    --red: #c21818;
+}
+
+#animation_container {
+    height: 110px;
+    background: #323232;
+    /* padding: 0px 2px; */
+    display: flex;
+    flex-direction: column;
+    font-family: 'Montserrat', sans-serif;
+    position: relative;
+    transition-property: all;
+    transition-timing-function: ease-in-out;
+    transition-duration: 2s;
+    overflow: hidden;
+}
+
+#animation_container #running_order {
+    display: flex;
+    flex: 1;
+    height: 100%;
+    position: relative;
+}
+
+#animation_container #race_status {
+    background-color: rgba(0, 0, 0, 0.75);
+    color: var(--tpd-orange);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    font-weight: 600;
+    text-shadow: 0 0 25px var(--tpd-orange);
+    font-style: italic;
+
+    transition-property: all;
+    transition-timing-function: ease-in-out;
+    transition-duration: 2s;
+}
+
+#animation_container #progress_bar_wrapper {
+    height: 6px;
+    border-radius: 1px;
+    overflow: hidden;
+    background-color: var(--tpd-orange);
+    position: relative;
+}
+
+#animation_container #progress_marker {
+    background-color: var(--green);
+    width: 0%;
+    height: 100%;
+
+    transition-property: all;
+    transition-timing-function: linear;
+    transition-duration: 0.5s;
+}
+
+#animation_container #par_marker,
+#animation_container #jumps_marker .jumps_marker {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 3px;
+    height: 6px;
+    background-color: var(--white);
+    z-index: 100;
+    border-radius: 1px;
+
+    transition-property: all;
+    transition-timing-function: linear;
+    transition-duration: 0.5s;
+}
+
+#animation_container #jumps_marker .jumps_marker {
+    background-color: var(--white);
+}
+
+#animation_container #logos {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 4px 0 4px 0;
+}
+
+#animation_container #race_course_name {
+    color: white;
+    font-size: 0.7rem;
+    margin: 0 0 0 3px;
+}
+
+#animation_container #race_course_name span {
+    font-weight: 700;
+}
+
+#animation_container #tpd_logo svg {
+    width: 85px;
+}
+
+#animation_container #race_course_logo img {
+    height: 28px;
+}
+
+#animation_container #finish_post {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#animation_container #total_runners {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    color: var(--white);
+    line-height: 15px;
+}
+
+#animation_container #total_runners_number {
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-right: 2px;
+    line-height: 2px;
+}
+
+#animation_container #info_box {
+    gap: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--white);
+    width: 74px;
+    margin: 0 4px 0 0;
+}
+
+#animation_container #velocity {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--tpd-orange);
+    text-align: center;
+    line-height: 0.85;
+}
+
+#animation_container #velocity_value {
+    font-variant: tabular-nums;
+}
+
+#animation_container #velocity_format {
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin: 0;
+    color: var(--white);
+    font-style: normal;
+}
+
+#animation_container #distance {
+    line-height: 1.5;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+#animation_container #distance_value {
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin: 0;
+    font-style: normal;
+}
+
+#animation_container #runtime {
+    line-height: 0.75;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+#animation_container #runtime_format {
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin: 0;
+    color: var(--white);
+    font-style: normal;
+}
+
+
+#animation_container #runners_section {
+    overflow: hidden;
+    position: relative;
+    margin: 4px 6px 3px 1px;
+    flex: 1;
+}
+
+#animation_container .runner {
+    position: absolute;
+    right: 0;
+    overflow: hidden;
+    border-radius: 2px;
+    width: 73px;
+    height: 100%;
+    /* color: white; */
+    z-index: 460;
+    /* transition: all 2s cubic-bezier(0.65, 0.05, 0.36, 1) 0s;*/
+    display: flex;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.65, 0.05, 0.36, 1);
+    transition-duration: 2s;
+}
+
+#animation_container .runner_card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+}
+
+#animation_container .runner_corner {
+    width: 100%;
+    height: 21px;
+    text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.3);
+    background: white;
+    box-shadow: 0px -10px 10px 7px #000000b4;
+    display: flex;
+    color: #000;
+    justify-content: space-between;
+}
+
+#animation_container .length_behind {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin: 2px 0 0 2px;
+}
+
+#animation_container .runner_number {
+    font-weight: 500;
+    font-size: 17px;
+    margin: 1px 1px 1px 0;
+    border: 1px solid #000;
+    border-radius: 2px;
+    background: #fff;
+    width: 25px;
+    text-align: center;
+    line-height: 17px;
+}
+
+#animation_container .runner_silk {
+    flex: 1;
+    margin: 3px 0 0 0;
+    display: flex;
+    align-items: center;
+    transform: scale(1.25);
+}
+
+#animation_container .runner_silk img {
+    border-radius: 5px;
+}
+
+#animation_container .runner_info_container {
+    position: relative;
+    border-radius: 2px;
+    background-color: rgba(0, 0, 0, 0.75);
+    width: calc(100% - 4px);
+    box-shadow: 0 3px 8px -2px #000000b4;
+    height: 20px;
+    margin: 0 0 2px 0;
+}
+
+#animation_container .runner_info_container div {
+    font-size: 0.9rem;
+    text-align: center;
+    text-shadow: 0px 1px 4px rgba(255, 255, 255, 0.3);
+}*
+
+#animation_container .runner_info {
+    height: 19px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#animation_container .runner_loaded {
+    position: absolute;
+    left: 5px;
+    bottom: 1.5px;
+    height: 1px;
+    width: 80%;
+    border-radius: 5px;
+    background-color: rgb(145, 255, 0);
+    display: none;
+
+    transition-property: all;
+    transition-timing-function: ease-in-out;
+    transition-duration: 0.5s;
+}
+
+@keyframes blinkMe {
+    0% {
+        border-radius: 4px;
+        background-color: transparent;
+    }
+    50% {
+        border-radius: 4px;
+        background-color: var(--red);
+    }
+    100% {
+        border-radius: 4px;
+        background-color: transparent;
+    }
+}
+
+@keyframes flashGreen {
+    0% {
+        background-color: rgba(0, 0, 0, 0.75);
+    }
+
+    50% {
+        background-color: var(--green);
+    }
+
+    100% {
+        background-color: rgba(0, 0, 0, 0.75);
+    }
+}
+
+@keyframes flashRed {
+    0% {
+        background-color: rgba(0, 0, 0, 0.75);
+    }
+
+    50% {
+        background-color: var(--red);
+    }
+
+    100% {
+        background-color: rgba(0, 0, 0, 0.75);
+    }
+}
