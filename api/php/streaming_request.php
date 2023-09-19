@@ -6,5 +6,5 @@
 
     echo 
     (isset($k) && isset($vk) && isset($_GET['sc'])) 
-    ? file_get_contents("https://www.tpd.zone/json-rpc/v2/vendors/streaming_request/?mode={$_GET['mode']}&sc={$_GET['sc']}&ip={$_SERVER['REMOTE_ADDR']}&k={$k}")
+    ? file_get_contents($target . "/json-rpc/v2/vendors/streaming_request/?mode={$_GET['mode']}&sc={$_GET['sc']}&ip={$_SERVER['REMOTE_ADDR']}&k={$k}")
     : [];
