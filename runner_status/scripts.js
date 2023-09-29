@@ -58,7 +58,7 @@ function start_animation(sc, mode, data) {
                             clientKey: data.clientKey, 
                             sc: [sc],
                             inc: ['M', 'RS'],
-                            pre_off: 30 // include 30 seconds before off
+                            pre_off: document.querySelector("#stp").value // seconds before off
                         })
                      ) 
                  }
@@ -77,60 +77,141 @@ function start_animation(sc, mode, data) {
 function update_animation(data) {
     if(data?.RS) {
 
+        let geoJSONData = {
+            'type': 'geojson',
+            'data': {
+                'type': 'FeatureCollection',
+                'features': [
+                    {
+                        'type': 'Feature',
+                        'properties': {
+                            'color': 'blue'
+                        },
+                        'geometry': {
+                            'type': 'LineString',
+                            'coordinates': [
+                                data?.RS?.M?.SG[0], data?.RS?.M?.SG[1]
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+
+        const colors = {
+            'LG': 'red',
+            'LD': 'orange',
+            'AH': 'green'
+        }
+
+        for (const state of ['LG', 'LD', 'AH']) {
+            if(data?.RS?.M?.['SG_' + state]?.[0]) {
+                geoJSONData.data.features.push({
+                    'type': 'Feature',
+                    'properties': {
+                       'color': colors[state], 
+                    },
+                    'geometry': {
+                        'type': 'LineString',
+                        'coordinates': [
+                            data.RS.M['SG_' + state][0], data.RS.M['SG_' + state][1]
+                        ]
+                    }
+                })
+            }
+        }
+       
+
         if(!map) {
             map = new mapboxgl.Map({
                 container: 'map',
                 style: 'mapbox://styles/levelsoft/ckjwpx0i111ur17pc2qe4ap6p',
-                center: data.RS[Object.keys(data.RS)[0]].LL,
+                center: data.RS.R[Object.keys(data.RS.R)[0]].LL,
                 zoom: 20,
                 bearing: 0,
                 pitch: 0,
                 attributionControl: false
             });
-            Object.keys(data.RS).forEach(number => {
+            Object.keys(data.RS.R).forEach(number => {
 
                 var el = document.createElement('div');
                 el.className = 'map_marker silks_' + number.replace(/^0+/, '');
-                el.innerHTML = number.replace(/^0+/, '')
+                el.innerHTML = number.replace(/^0+/, '') + " " + data.RS.R[number].S;
                 runner_maps[number] = {
-                    marker: new mapboxgl.Marker(el).setLngLat(data.RS[number].LL).addTo(map)
+                    marker: new mapboxgl.Marker(el).setLngLat(data.RS.R[number].LL).addTo(map)
                 }
             })
 
-            MC?.M?.SL?.LD?.forEach(function(coord) {
-                var sl = document.createElement('div');
-                sl.className = 'start_point LD';
-                new mapboxgl.Marker(sl).setLngLat(coord).addTo(map);
-            });
-            MC?.M?.SL?.LG?.forEach(function(coord) {
-                var sl = document.createElement('div');
-                sl.className = 'start_point LG';
-                new mapboxgl.Marker(sl).setLngLat(coord).addTo(map);
-            });
-            MC?.M?.SL?.AP?.forEach(function(coord) {
-                var sl = document.createElement('div');
-                sl.className = 'start_point AP';
-                new mapboxgl.Marker(sl).setLngLat(coord).addTo(map);
-            });
+            map.on('load', function () {
+
+                map.addSource('multiple-lines-source', geoJSONData);
+                map.addLayer({
+                  'id': 'multiple-lines-layer',
+                  'type': 'line',
+                  'source': 'multiple-lines-source',
+                  'layout': {
+                  },
+                  'paint': {
+                    'line-color': [
+                        'match', ['get','color'],
+                        'red', 'red',
+                        'yellow', 'yellow',
+                        'green','green',
+                        'blue','blue',
+                        'orange','orange',
+                        'black'
+                    ],
+                    'line-width': 2,
+                  },
+                });
+
+                let _circle = turf.circle(data?.RS?.M?.PR?.LL,  data?.RS?.M?.PR?.R, {
+                    steps: 80,
+                    units: 'meters' // or "mile"
+                });
+    
+                // Parade Ring
+                map.addSource("circleData", {
+                      type: "geojson",
+                      data: _circle,
+                });
+                
+                map.addLayer({
+                    id: "circle-fill",
+                    type: "fill",
+                    source: "circleData",
+                    paint: {
+                        "fill-color": "yellow",
+                        "fill-opacity": 0.2,
+                    },
+                });
+    
+            })
+
             
         } else {
             map.jumpTo({
-                center: data.RS[Object.keys(data.RS)[0]].LL
+                center: data.RS.R[Object.keys(data.RS.R)[0]].LL
             })
+
+            let lines = map.getSource("multiple-lines-source")
+            if(lines) lines.setData(geoJSONData.data);
         }
 
-        Object.keys(data.RS).forEach(number => {
-            let rs = data.RS[number]
+        Object.keys(data.RS.R).forEach(number => {
+            let rs = data.RS.R[number]
             let row = document.querySelector("tr[number='" + parseInt(number) + "']")
             if(row) {
-                row.querySelector(".dt").innerHTML = rs?.DT || ""
-                row.querySelector(".ds").innerHTML = rs?.DS || ""
+                row.querySelector(".ds").innerHTML = rs?.DS?.D || ""
                 row.querySelector(".as").innerHTML = rs?.AS || ""
                 row.querySelector(".vs").innerHTML = rs?.VS || ""
                 row.querySelector(".status").innerHTML = rs?.S || ""
             }
 
-            if(map && rs?.LL && runner_maps?.[number]) runner_maps[number].marker.setLngLat(rs.LL);
+            if(map && rs?.LL && runner_maps?.[number]) {
+                runner_maps[number].marker.setLngLat(rs.LL);
+                document.querySelector('.map_marker.silks_' + number.replace(/^0+/, '')).innerHTML = number.replace(/^0+/, '') + " " + data.RS.R[number].S
+            }
 
         }) 
     }
@@ -151,7 +232,6 @@ function populate_animation_runners(data) {
         tr.innerHTML = `
             <td>${runner.number}</td>
             <td><img src='${runner.silk}'></img></td>
-            <td class="dt"></td>
             <td class="ds"></td>
             <td class="as"></td>
             <td class="vs"></td>

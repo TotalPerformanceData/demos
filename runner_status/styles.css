@@ -15,7 +15,8 @@
 #tbl {
     border-collapse: collapse;
     border-spacing: 0;
-    width: 600px;
+    width: 400px;
+    table-layout: fixed;
 }
 
 #tbl td, #tbl th  {
@@ -31,14 +32,14 @@
 
 #map {
     height: 600px;
-    width: 600px;
+    width: 1000px;
     border: 2px solid #aaa;
 }
 
 .map_marker {
-    width: 22px;
+    width: 40px;
     height: 16px;
-    line-height: 13px;
+    line-height: 17px;
     font-weight: 600;
     border-radius: 4px;
     padding: 0;
