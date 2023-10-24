@@ -58,6 +58,7 @@ function start_animation(sc, mode, data) {
                             clientKey: data.clientKey, 
                             sc: [sc],
                             inc: ['M', 'RS'],
+                            version: 'dev',
                             pre_off: document.querySelector("#stp").value // seconds before off
                         })
                      ) 
@@ -197,6 +198,12 @@ function update_animation(data) {
             let lines = map.getSource("multiple-lines-source")
             if(lines) lines.setData(geoJSONData.data);
         }
+
+        document.querySelector(".DTS").innerHTML = data.RS.M.DSL + "m"
+        document.querySelector(".AV").innerHTML = (data.RS.M.AV * 2.23693629).toFixed(1) + "mph"
+        document.querySelector(".AP").innerHTML = (data?.RS?.M?.AP || 0) + "/" + Object.keys(data.RS.R).length
+        document.querySelector(".LG").innerHTML = (data?.RS?.M?.LG || 0) + "/" + Object.keys(data.RS.R).length
+        document.querySelector(".LD").innerHTML = (data?.RS?.M?.LD || 0) + "/" + Object.keys(data.RS.R).length
 
         Object.keys(data.RS.R).forEach(number => {
             let rs = data.RS.R[number]

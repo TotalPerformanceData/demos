@@ -12,6 +12,14 @@
     gap: 10px;
 }
 
+.market_info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 150px; 
+    font-family: 'Montserrat', sans-serif;
+}
+
 #tbl {
     border-collapse: collapse;
     border-spacing: 0;
