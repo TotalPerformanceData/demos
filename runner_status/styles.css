@@ -8,6 +8,7 @@ body {
   max-width: 1200px;
   margin: auto;
   -webkit-font-smoothing: antialiased;
+  background-color: #FFF;
 }
 
 #controls {
