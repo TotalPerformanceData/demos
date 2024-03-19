@@ -63,7 +63,7 @@ jQuery(document).ready(() => {
             }
             $('#speed').trigger('change');
         }
-    })
+    }).trigger('click')
 
     init();
 
