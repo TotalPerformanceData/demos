@@ -1,6 +1,8 @@
 jQuery(document).ready(() => {
     const public_api = "/json-rpc/v2";
-    $("#version").text(RunnerStatus.VERSION);
+    if (!RunnerStatus.DEBUG) {
+        $("#version").text(`v.${RunnerStatus.VERSION}`);
+}
     const timeRaceFormat = new Intl.DateTimeFormat('en-GB', {
         hour: 'numeric',
         minute: 'numeric',
