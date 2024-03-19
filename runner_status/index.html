@@ -1,77 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>Running Order Animation Demo</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="styles.css">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap">
-    </head>
-    <body>
-        <div id="controls" style="text-align: center; font-family: 'Montserrat', sans-serif; margin: 0 0 20px 0;">
-            <h1>Runner Animation <span id="version"></span></h1>
-            <label>
-                <span>RACE</span>
-                <input type="text" id="sharecode" value="14202309171610">
-            </label>
-            <label>
-                <span>STP</span>
-                <input type="number" id="stp" value="180" style="width: 80px">
-            </label>
-            <button id="load" style="text-align: center; font-family: 'Montserrat', sans-serif">RUN</button>
-            <button id="stop" style="text-align: center; font-family: 'Montserrat', sans-serif">STOP</button>
-        </div>
 
-        <div id="container">
-            <div id="left_container">
-                <div>
-                    <div class="market_info">
-                        <div class="market_info_lbl">DTS</div>
-                        <div class="market_info_value DTS">-</div>
-                    </div>
-                    <div class="market_info">
-                        <div class="market_info_lbl">AV</div>
-                        <div class="market_info_value AV">-</div>
-                    </div>
-                    <div class="market_info">
-                        <div class="market_info_lbl">AP</div>
-                        <div class="market_info_value AP">-</div>
-                    </div>
-                    <div class="market_info">
-                        <div class="market_info_lbl">LG</div>
-                        <div class="market_info_value LG">-</div>
-                    </div>
-                    <div class="market_info">
-                        <div class="market_info_lbl">LD</div>
-                        <div class="market_info_value LD">-</div>
-                    </div>
-                </div>
-                <table id="tbl">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th></th> <!--SILK -->
-                            <!-- <th>DT</th> -->
-                            <th>DS</th>
-                            <th>AS</th>
-                            <th>VS</th>
-                            <th>STATUS</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table> 
-            </div>
-            
+<head>
+    <meta charset="utf-8">
+    <title>Runner Status Animation Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap">
+</head>
 
-            <div id="map"></div> 
-        </div>
-        
-        <link rel="stylesheet" href=" https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css">
-        <script src="https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/5.1.5/turf.js"></script>
+<body>
+    <h1>Runner Status Animation v.<span id="version"></span></h1>
+    <div id="controls">
+        <label>
+            <span>Sharecode:</span>
+            <span style="position: relative">
+                <input type="text" id="sharecode" value="35202310021830">
+                <div id="samples"></div>
+            </dispanv>
+        </label>
+        <button id="load" title="Load race">LOAD</button>
+        <label title="Seconds to scheduled start">
+            <span>STP:</span>
+            <input type="number" id="stp" value="300" style="width: 80px">
+        </label>
+        <label>
+            <span>Speed:</span>
+            <select id="speed">
+                <option value="1">Normal</option>
+                <option value="2">2x</option>
+                <option value="10" selected>10x</option>
+                <option value="20">20x</option>
+            </select>
+        </label>
+    </div>
 
-        <script src="scripts.js"></script>
-    </body> 
-</html> 
+    <div id="container">
+    </div>
+    
+    <script src="jquery-3.7.1.slim.min.js"></script>
+    <script src="runner_status.js"></script>
+    <script src="scripts.js" defer></script>
+</body>
 
-
+</html>
