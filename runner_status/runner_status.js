@@ -115,19 +115,15 @@ class RunnerStatus {
     }
 
     async updateRaceTotals() {
-        let stopped = false;
-        let loaded = 0;
+                let loaded = 0;
         this.runners.forEach(r => {
             const status = r.attr('status') ?? 'SD';
-            if (status == 'F') {
-                stopped = true;
-            } else if (status == 'LD') {
+            if (status == 'LD') {
                 loaded++;
             }
         });
         this.$runners.find('th.LD').attr('done', loaded ? `${loaded} / ${this.runners.length}` : '')
-        if (stopped) this.setPlayerStatus(RunnerStatus.PlayerStatus.STOPPED);
-    }
+            }
 
     get type() { return this.#type }
 
@@ -156,7 +152,7 @@ class RunnerStatus {
             $('<span>').addClass(`fi fi-${data.country.toLowerCase()}`),
             $('<span>').text(RunnerStatus.racecourses[data.racecourse] ?? data.racecourse),
             $('<span>').text(RunnerStatus.dateTimeFormat.format(new Date(`${data.post_time}+0`))),
-            $('<span>').text(data.distance.replace(/^|\s0\w\s*/g, '')).attr('title', 'Race distance'),
+            $('<span>').text(data.distance.replace(/^|\s0\w/g, '')).attr('title', 'Race distance'),
             $('<span>').text(data.obstacle)
         ]).show();
         this.$time.parent().show();
@@ -354,6 +350,7 @@ class RunnerStatusLive extends RunnerStatus {
                         Object.entries(message.RS).forEach(([cl, s]) => {
                             this.setRunnerStatus(this.runners.find(r => r.attr('cl') == cl), s)
                         });
+                    this.updateRaceTotals();
                     }
                     if (!this.actualStart && message.MR === true) {
                         this.actualStart = new Date(message.T).getTime();
@@ -361,7 +358,6 @@ class RunnerStatusLive extends RunnerStatus {
                     if (this.actualStart && message.MR === false) {
                         this.actualStart = false;
                     }
-
                 }
                 this.$connected.trigger('update');
 
@@ -370,7 +366,6 @@ class RunnerStatusLive extends RunnerStatus {
             }
         });
     }
-
 
     constructor(parent, sc) {
         super(RunnerStatus.Type.Live, parent, sc);
@@ -460,6 +455,18 @@ class RunnerStatusHistoric extends RunnerStatus {
     runnerFirstStatusTime(rr, s) {
         const t = rr.find(i => i.s == s)?.t;
         return t ? RunnerStatus.timeFormat.format(new Date(t * 1000)) : '';
+    }
+
+    async updateRaceTotals() {
+        super.updateRaceTotals()
+        let stopped = false;
+        this.runners.forEach(r => {
+            const status = r.attr('status') ?? 'SD';
+            if (status == 'F') {
+                stopped = true;
+            }
+        });
+        if (stopped) this.setPlayerStatus(RunnerStatus.PlayerStatus.STOPPED);
     }
 
     async setPlayerStatus(status) {
