@@ -246,6 +246,7 @@ body {
   top: 0.7em;
   margin-left: -13px;
   z-index: 98;
+  transition: all 1s ease-in-out;
 }
 
 #runner_status .runners .name {
