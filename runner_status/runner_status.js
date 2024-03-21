@@ -103,8 +103,7 @@ class RunnerStatus {
         console.log(message.replace(/<[^>]*>?/gm, ''));
         if (RunnerStatus.DEBUG && this.$log) {
             const $it = $('<li>').append($('<span>').addClass('time').html(RunnerStatus.timeFormat.format(this.currentTime || new Date().getTime())), $('<span>').html(message));
-            this.$log.append($it)
-            $it.get(0).scrollIntoView();
+            this.$log.append($it).scrollTop(Number.MAX_SAFE_INTEGER);
         }
     }
 
@@ -189,7 +188,7 @@ class RunnerStatus {
             $('<th>').addClass('stall').text('SD').attr('title', 'Stall Draw').on('click', () => this.sortRunners('stall')),
             $('<th>').addClass('cl').text('CL').attr('title', 'Cloth Number').on('click', () => this.sortRunners('cl')),
             $('<th>').text('Name'),
-            ...Object.entries(this.curStatuses).map(([s, sn]) => $('<th>').addClass('status').addClass(s).attr('title_long', sn).attr('title_short', s)),
+            ...Object.entries(this.curStatuses).map(([s, sn]) => $('<th>').addClass('status').addClass(s).attr('title', sn).attr('title_long', sn).attr('title_short', s)),
         ]);
         this.$runners.$tbody.html('').append(this.runners);
         this.$runners.$tbody.find('img').on('error', function () {
