@@ -38,6 +38,14 @@ class RunnerStatus {
         minute: 'numeric',
         timeZone: 'UTC'
     });
+    static dateTimeShortFormat = new Intl.DateTimeFormat('en-GB', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        timeZone: 'UTC'
+    });
     static timeFormat = new Intl.DateTimeFormat('en-GB', {
         hour: 'numeric',
         minute: 'numeric',
@@ -115,7 +123,7 @@ class RunnerStatus {
     }
 
     async updateRaceTotals() {
-                let loaded = 0;
+        let loaded = 0;
         this.runners.forEach(r => {
             const status = r.attr('status') ?? 'SD';
             if (status == 'LD') {
@@ -123,7 +131,7 @@ class RunnerStatus {
             }
         });
         this.$runners.find('th.LD').attr('done', loaded ? `${loaded} / ${this.runners.length}` : '')
-            }
+    }
 
     get type() { return this.#type }
 
@@ -151,7 +159,8 @@ class RunnerStatus {
         this.$race.html('').append([
             $('<span>').addClass(`fi fi-${data.country.toLowerCase()}`),
             $('<span>').text(RunnerStatus.racecourses[data.racecourse] ?? data.racecourse),
-            $('<span>').text(RunnerStatus.dateTimeFormat.format(new Date(`${data.post_time}+0`))),
+            $('<span>').addClass('post_time').attr('date_full', RunnerStatus.dateTimeFormat.format(new Date(`${data.post_time}+0`)))
+                .attr('date_short', RunnerStatus.dateTimeShortFormat.format(new Date(`${data.post_time}+0`))),
             $('<span>').text(data.distance.replace(/^|\s0\w/g, '')).attr('title', 'Race distance'),
             $('<span>').text(data.obstacle)
         ]).show();
@@ -350,7 +359,7 @@ class RunnerStatusLive extends RunnerStatus {
                         Object.entries(message.RS).forEach(([cl, s]) => {
                             this.setRunnerStatus(this.runners.find(r => r.attr('cl') == cl), s)
                         });
-                    this.updateRaceTotals();
+                        this.updateRaceTotals();
                     }
                     if (!this.actualStart && message.MR === true) {
                         this.actualStart = new Date(message.T).getTime();

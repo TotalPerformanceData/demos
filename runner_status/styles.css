@@ -80,6 +80,7 @@ body {
   justify-content: center;
   flex-direction: column;
   margin: 4em 2em;
+  transition: all 1s ease-in-out;
 }
 
 #runner_status .race,
@@ -108,10 +109,12 @@ body {
 
 #runner_status .race {
   left: 0em;
+  text-align: left;
 }
 
 #runner_status .race span {
   display: inline-block;
+  text-align: center;
   padding: 0.4em 1.5em;
   color: hsl(110, 32%, 30%);
   line-height: 1.1em !important;
@@ -140,6 +143,11 @@ body {
   border-left: 1px solid hsl(110, 32%, 65%);
   border-top: 1px solid hsl(110, 32%, 65%);
 }
+
+#runner_status .race span.post_time:before {
+  content: attr(date_full);
+}
+
 
 #runner_status .right {
   right: -0em;
@@ -237,7 +245,6 @@ body {
   left: 50%;
   top: 0.7em;
   margin-left: -13px;
-  transition: all 1s ease-in-out;
   z-index: 98;
 }
 
@@ -298,11 +305,33 @@ body {
   align-items: center;
 }
 
-@media only screen and (max-width: 1000px) {
+
+
+
+
+@media only screen and (max-width: 900px) {
+  #runner_status {
+    margin: 4em 0em;
+  }
+
+  #runner_status .race {
+    top: -3em;
+    height: 4em;
+  }
+
   #runner_status th.status::before {
     content: attr(title_short);
   }
+
+  #runner_status .race span.post_time:before {
+    content: attr(date_short);
+  }
+
 }
+
+
+
+
 
 
 #runner_status .SD::before {
