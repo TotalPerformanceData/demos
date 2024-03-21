@@ -159,18 +159,18 @@ class RunnerStatus {
         this.$race.html('').append([
             $('<span>').addClass(`fi fi-${data.country.toLowerCase()}`),
             $('<span>').text(RunnerStatus.racecourses[data.racecourse] ?? data.racecourse),
-            $('<span>').addClass('post_time').attr('date_full', RunnerStatus.dateTimeFormat.format(new Date(`${data.post_time}+0`)))
-                .attr('date_short', RunnerStatus.dateTimeShortFormat.format(new Date(`${data.post_time}+0`))),
+            $('<span>').addClass('post_time').attr('date_full', RunnerStatus.dateTimeFormat.format(new Date(`${data.post_time}+00:00`)))
+                .attr('date_short', RunnerStatus.dateTimeShortFormat.format(new Date(`${data.post_time}+00:00`))),
             $('<span>').text(data.distance.replace(/^|\s0\w/g, '')).attr('title', 'Race distance'),
             $('<span>').text(data.obstacle)
         ]).show();
         this.$time.parent().show();
 
-        this.postTime = (new Date(`${data.post_time}+0`)).getTime();
+        this.postTime = (new Date(`${data.post_time}+00:00`)).getTime();
         this.actualStart = data.gmax * 1000;
         this.initCurrentTime();
 
-        this.curStatuses = data.obstacle == 'flat' ? RunnerStatus.statuses : Object.fromEntries(Object.entries(RunnerStatus.statuses).filter(([s, sn]) => !['LD', 'LG'].includes(s)));
+        this.curStatuses = data.obstacle.match(/flat/i) ? RunnerStatus.statuses : Object.fromEntries(Object.entries(RunnerStatus.statuses).filter(([s, sn]) => !['LD', 'LG'].includes(s)));
         this.runners = Object.entries(data.runners).map(([cl, r]) => {
             return $('<tr>')
                 .attr('cl', cl)
