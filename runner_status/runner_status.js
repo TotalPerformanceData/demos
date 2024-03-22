@@ -187,7 +187,7 @@ class RunnerStatus {
         this.$runners.$thead.html('').append([
             $('<th>').addClass('stall').text('SD').attr('title', 'Stall Draw').on('click', () => this.sortRunners('stall')),
             $('<th>').addClass('cl').text('CL').attr('title', 'Cloth Number').on('click', () => this.sortRunners('cl')),
-            $('<th>').text('Name'),
+            $('<th>').addClass('name').text('Name'),
             ...Object.entries(this.curStatuses).map(([s, sn]) => $('<th>').addClass('status').addClass(s).attr('title', sn).attr('title_long', sn).attr('title_short', s)),
         ]);
         this.$runners.$tbody.html('').append(this.runners);

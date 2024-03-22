@@ -66,7 +66,15 @@ body {
 }
 
 
+@media only screen and (max-width: 900px) {
+  #controls {
+    flex-direction: column;
+  }
 
+#sharecode {
+    width: 50%;
+  }
+}
 
 
 
@@ -265,6 +273,7 @@ body {
 
 #runner_status .runners .status {
   width: 10%;
+min-width: 28px;
   position: relative;
 }
 
@@ -313,6 +322,10 @@ body {
 @media only screen and (max-width: 900px) {
   #runner_status {
     margin: 4em 0em;
+  }
+
+  #runner_status .stall, #runner_status .name {
+    display: none;
   }
 
   #runner_status .race {
