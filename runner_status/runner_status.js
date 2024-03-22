@@ -180,7 +180,7 @@ class RunnerStatus {
                     $('<td>').addClass('stall').text(r.stall_draw),
                     $('<td>').addClass('cl').text(cl),
                     $('<td>').addClass('name').text(r.name),
-                    ...Object.entries(this.curStatuses).map(([s, sn]) => $('<td>').addClass('status').addClass(s).text(this.runnerFirstStatusTime(r.status, s))),
+                    ...Object.entries(this.curStatuses).map(([s, sn]) => $('<td>').addClass('status').addClass(s).text('')), //this.runnerFirstStatusTime(r.status, s))),
                 ])
         });
         this.runners.map(r => r.find('.status.SD').append($('<img>').attr('cl', r.attr('cl')).addClass('silk').addClass('r').attr('src', `${RunnerStatus.SILKS_URL}${data.sc}${r.attr('cl')}.jpg`)));

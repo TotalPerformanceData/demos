@@ -316,16 +316,17 @@ min-width: 28px;
 }
 
 
+@media only screen and (max-width: 800px) {
+  #runner_status .stall, #runner_status .name {
+    display: none;
+  }
 
+}
 
 
 @media only screen and (max-width: 1000px) {
   #runner_status {
     margin: 4em 0em;
-  }
-
-  #runner_status .stall, #runner_status .name {
-    display: none;
   }
 
   #runner_status .race {
