@@ -66,7 +66,7 @@ body {
 }
 
 
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: 1000px) {
   #controls {
     flex-direction: column;
   }
@@ -236,7 +236,7 @@ body {
 
 #runner_status .runners thead th {
   opacity: 0.5;
-  padding: 1em 0 0.5em 0;
+  padding: 3em 0 0.5em 0;
   border-bottom: 3px solid #fff;
   user-select: none;
 }
@@ -319,7 +319,7 @@ min-width: 28px;
 
 
 
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: 1000px) {
   #runner_status {
     margin: 4em 0em;
   }
