@@ -160,7 +160,7 @@ class RunnerStatus {
             $('<span>').text(RunnerStatus.racecourses[data.racecourse] ?? data.racecourse),
             $('<span>').addClass('post_time').attr('date_full', RunnerStatus.dateTimeFormat.format(new Date(`${data.post_time}+00:00`)))
                 .attr('date_short', RunnerStatus.dateTimeShortFormat.format(new Date(`${data.post_time}+00:00`))),
-            $('<span>').text(data.distance.replace(/^|\s0\w/g, '')).attr('title', 'Race distance'),
+            $('<span>').text(data.distance.replace(/(^|\s)0\w(\s|$)/g, '$2')).attr('title', 'Race distance'),
             $('<span>').text(data.obstacle)
         ]).show();
         this.$time.parent().show();
@@ -187,7 +187,7 @@ class RunnerStatus {
         this.$runners.$thead.html('').append([
             $('<th>').addClass('stall').text('SD').attr('title', 'Stall Draw').on('click', () => this.sortRunners('stall')),
             $('<th>').addClass('cl').text('CL').attr('title', 'Cloth Number').on('click', () => this.sortRunners('cl')),
-            $('<th>').text('Name'),
+            $('<th>').addClass('name').text('Name'),
             ...Object.entries(this.curStatuses).map(([s, sn]) => $('<th>').addClass('status').addClass(s).attr('title', sn).attr('title_long', sn).attr('title_short', s)),
         ]);
         this.$runners.$tbody.html('').append(this.runners);
