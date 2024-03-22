@@ -461,7 +461,7 @@ class RunnerStatusHistoric extends RunnerStatus {
     }
 
     runnerFirstStatusTime(rr, s) {
-        const t = rr.find(i => i.s == s)?.t;
+        const t = rr?.find(i => i.s == s)?.t;
         return t ? RunnerStatus.timeFormat.format(new Date(t * 1000)) : '';
     }
 
