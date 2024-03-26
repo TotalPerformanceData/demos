@@ -5,8 +5,7 @@ jQuery(document).ready(() => {
 }
     const timeRaceFormat = new Intl.DateTimeFormat('en-GB', {
         hour: 'numeric',
-        minute: 'numeric',
-        timeZone: 'UTC'
+        minute: 'numeric'
     });
 
     const demo = {
