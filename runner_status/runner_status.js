@@ -10,6 +10,22 @@ class RunnerStatus {
         Historic: 'Historic'
     };
 
+    static consoleStyles = {
+        block: [
+            "color: #fff",
+            "background-color: #090",
+            "padding: 2px 4px",
+           "margin-right: 0.5em"
+        ].join(";"),
+        normal: [
+            "color: auto",
+            "background-color: auto",
+            "padding: auto",
+            "margin-right: auto"
+        ].join(";"),
+    }
+
+
     static statuses = {
         'SD': 'Saddling',
         'PR': 'Parading',
@@ -35,22 +51,19 @@ class RunnerStatus {
         month: 'long',
         day: 'numeric',
         hour: 'numeric',
-        minute: 'numeric',
-        timeZone: 'UTC'
+        minute: 'numeric'
     });
     static dateTimeShortFormat = new Intl.DateTimeFormat('en-GB', {
         year: 'numeric',
         month: 'numeric',
         day: 'numeric',
         hour: 'numeric',
-        minute: 'numeric',
-        timeZone: 'UTC'
+        minute: 'numeric'
     });
     static timeFormat = new Intl.DateTimeFormat('en-GB', {
         hour: 'numeric',
         minute: 'numeric',
-        second: 'numeric',
-        timeZone: 'UTC'
+        second: 'numeric'
     });
     static relativeTimeFormat = (mseconds) => `${mseconds < 0 ? '-' : ''}${new Date(Math.abs(mseconds)).toLocaleTimeString('en-GB', {
         timeZone: 'UTC',
@@ -100,7 +113,7 @@ class RunnerStatus {
     async finishLoading() { }
 
     async log(message) {
-        console.log(message.replace(/<[^>]*>?/gm, ''));
+        console.log(`%cRS%c${message.replace(/<[^>]*>?/gm, '')}`, RunnerStatus.consoleStyles.block, RunnerStatus.consoleStyles.normal);
         if (RunnerStatus.DEBUG && this.$log) {
             const $it = $('<li>').append($('<span>').addClass('time').html(RunnerStatus.timeFormat.format(this.currentTime || new Date().getTime())), $('<span>').html(message));
             this.$log.append($it).scrollTop(Number.MAX_SAFE_INTEGER);
@@ -154,7 +167,7 @@ class RunnerStatus {
     }
 
     async populateRunners(data) {
-        this.log(`Loading <b>${data.sc}</b>. Got <b>${Object.keys(data.runners).length}</b> runners. Post time: <b>${RunnerStatus.dateTimeFormat.format(new Date(data.post_time))}</b>`)
+        this.log(`Loading <b>${data.sc}</b>. Got <b>${Object.keys(data.runners).length}</b> runners. Post time: <b>${RunnerStatus.dateTimeFormat.format(new Date(`${data.post_time}+00:00`))}</b>`)
         this.$race.html('').append([
             $('<span>').addClass(`fi fi-${data.country.toLowerCase()}`),
             $('<span>').text(RunnerStatus.racecourses[data.racecourse] ?? data.racecourse),
