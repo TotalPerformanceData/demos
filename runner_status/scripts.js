@@ -10,12 +10,17 @@ jQuery(document).ready(() => {
     });
 
     const demo = {
-        '35202310021830': 'Newc 2 Oct 17:30 Flat',
-        '96202311191318': 'Aqueduct 19 Nov 18:18 Flat',
-        '30202402021620': 'Ling 2 Feb 16:20 Flat',
-        '04202310021602': 'Bath 2 Oct 15:02 Flat',
-        '01202310211625': 'Ascot 21 Oct 15:25 Flat',
-        '19202311191230': 'Font 19 Nov 12:30 Jump',
+        '47202403161715': 'Southwell, Sat Mar 16 2024, Flat',
+        '35202403231930': 'Newc, Sat Mar 23 2024, Flat',
+        '58202403162030': 'Wolv, Sat Mar 16 2024, Flat',
+        '30202403221442': 'Ling, Fri Mar 22 2024, Flat',
+        '01202310211625': 'Ascot, 21 Oct 15:25 2023, Flat',
+        '94202403231329': 'Santa Anita, Sat Mar 23 2024, Flat',
+        '71202403091315': 'Golden Gate, Sat Mar 09 2024, Flat',
+        '47202403141637': 'Southwell, Thu Mar 14 2024, Flat',
+        '30202403221342': 'Ling, Fri Mar 22 2024, Flat',
+        '14202403241505': 'Donc, Sun Mar 24 2024, Flat',
+        '01202403241445': 'Ascot, Sun Mar 24 2024, Hurdle',
     };
 
     let component = null;
