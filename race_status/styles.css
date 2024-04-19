@@ -1,6 +1,6 @@
 body {
     margin: 0;
-    background-color: #282822;
+    background-color: #242422;
     color: #DDD;
     font-family: 'Montserrat', sans-serif;
     height: 100%;
@@ -34,6 +34,16 @@ h1 {
     margin: 0;
     user-select: none;
     animation: animate-up-in 1.5s ease-in-out;
+}
+
+h1 .version {
+    position: absolute;
+    font-size: 10px;
+    color: #FFF;
+    right: 0;
+    top: 1em;
+    opacity: 0.2;
+    font-weight: normal;
 }
 
 #races {
@@ -154,7 +164,11 @@ h1 {
 }
 
 #races .race[status="finished"] {
-    color: #999;
+    color: #666;
+}
+
+#races .race[status="finished"] .country {
+    opacity: 0.4;
 }
 
 #races .race[status="live"] {
