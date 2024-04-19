@@ -1,0 +1,186 @@
+body {
+    margin: 0;
+    background-color: #282822;
+    color: #DDD;
+    font-family: 'Montserrat', sans-serif;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    -webkit-font-smoothing: antialiased;
+    box-sizing: border-box;
+}
+
+@keyframes animate-up-in {
+    0% {
+        margin-top: 3em;
+        opacity: 0;
+    }
+
+    100% {
+        margin-top: 0;
+        opacity: 1;
+    }
+}
+
+
+h1 {
+    color: #E68000;
+    text-shadow: 1px 1px 5px #000;
+    position: absolute;
+    top: 0.38em;
+    font-size: 5em;
+    margin: 0;
+    user-select: none;
+    animation: animate-up-in 1.5s ease-in-out;
+}
+
+#races {
+    display: table;
+    font-size: 1.3em;
+    flex-direction: column;
+    box-shadow: 0 0 2em #000;
+    margin: 5em 0 0 0;
+    padding: 0;
+    min-width: 30em;
+    transition: all 1s ease-in-out;
+    background-color: #000;
+    position: relative;
+}
+
+
+#races .race {
+    display: table-row;
+    flex-direction: row;
+    background-color: #111;
+    color: #666;
+    font-weight: normal;
+    position: relative;
+}
+
+#races .race.deleting {
+    animation-duration: 1s;
+    animation-name: animate-fade-out;
+}
+
+@keyframes animate-fade-out {
+    0% {
+        top: 0;
+        opacity: 1;
+    }
+
+    100% {
+        top: 10em;
+        opacity: 0;
+    }
+}
+
+#races .race>div {
+    padding: 0.5em 0.5em;
+    display: table-cell;
+    border-bottom: 1px solid #222;
+    vertical-align: middle;
+}
+
+#races .race .time {
+    width: 2em;
+}
+
+#races .race .country {
+    width: 0.8em;
+    padding: 4px;
+}
+
+#races .race .name {
+    width: auto;
+    white-space: nowrap;
+}
+
+#races .race .status {
+    min-width: 4em;
+    opacity: 0.4;
+}
+
+#races .race .progress {
+    min-width: 6em;
+    position: relative;
+    padding: 0.2em;
+    text-align: center;
+}
+
+#races .race .progress::before,
+#races .race .progress::after {
+    content: '';
+    display: block;
+    position: absolute;
+    width: var(--perc);
+    height: 4px;
+    bottom: 2px;
+    transition: all 0.5s ease-in-out;
+}
+
+#races .race[status="running"] .progress::after,
+#races .race[status="loading"] .progress::after {
+    width: 100%;
+    background-color: #000;
+}
+
+#races .race[status="waiting"] {
+    color: #DDD;
+}
+
+#races .race[status="canceled"] {
+    color: #D00;
+}
+
+#races .race[status="running"] {
+    color: #0D0;
+}
+
+#races .race[status="running"] .progress::before {
+    background-color: #0D0;
+    z-index: 42;
+}
+
+
+#races .race[status="loading"] {
+    color: #E68000;
+}
+
+#races .race[status="loading"] .progress::before {
+    background-color: #E68000;
+    z-index: 42;
+}
+
+#races .race[status="finished"] {
+    color: #999;
+}
+
+#races .race[status="live"] {
+    color: #FFF;
+    font-weight: bold;
+}
+
+@media only screen and (max-width: 800px) {
+    body {
+        display: block;
+        padding: 0;
+    }
+
+    #races {
+        width: 100%;
+        min-width: auto;
+        box-shadow: none;
+        margin: 0;
+    }
+
+    h1 {
+        display: none;
+    }
+
+    #races .race .name {
+        white-space: unset;
+    }
+
+}
