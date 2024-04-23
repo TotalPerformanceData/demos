@@ -4,21 +4,22 @@ Node.js example of Runner Status Feed usage
 
 const WebSocket = require('ws')
 
-const VENDOR_KEY = process.env('VENDOR_KEY') ?? '';
-const CLIENT_KEY = process.env('CLIENT_KEY') ?? VENDOR_KEY ?? '';
+const VENDOR_KEY = process.env.VENDOR_KEY ?? '';
+const CLIENT_KEY = process.env.CLIENT_KEY ?? '';
 
 async function main() {
 
     try {
         const response = await fetch('https://stg.tpd.zone/json-rpc/v2/status/?date=today');
         if (response.status == 200) {
-            const json = response.json();
-            console.log(json); // Races sharecode to info
+            const json = await response.json();
+            //console.log(json); // Races sharecode to info
 
             const ws = new WebSocket('wss://stream.tpd.zone/realtime_1.4');
             ws
                 .on('error', console.error)
                 .on('open', () => console.info('opened'))
+                .on('close', (event) => console.info(JSON.stringify(event)))
                 .on('message', (data) => {
                     console.debug('%s', data);
                     try {
