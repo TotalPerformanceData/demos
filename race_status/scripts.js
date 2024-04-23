@@ -11,13 +11,23 @@ relativeTimeFormat = (mseconds) => `${mseconds < 0 ? '-' : ''}${new Date(Math.ab
     second: '2-digit'
 })}`;
 
+const STATUSES = {
+    SD: 'Saddling',
+    PR: 'Parading',
+    GD: 'Going Down',
+    AP: 'At the Post',
+    GB: 'Going Behind',
+    LG: 'Loading',
+    LD: 'Loading',
+    R: 'Running'
+};
 
 class Race {
-    #status = 'expecting';
+    #status = 'pending';
     constructor(data) {
         this.sc = data.sc;
         console.debug(`New race ${data.sc}`);
-        this.lastSeen = { api: new Date(), stream: new Date() };
+        this.lastSeen = { api: new Date().getTime(), stream: new Date().getTime() };
         this.P = false;
         this.start = new Date(data.date_formatted);
         this.$container = $('<li>').addClass('race').attr('sc', data.sc).data('time', this.start);
@@ -34,7 +44,7 @@ class Race {
     set status(val) {
         if (this.#status != val) {
             this.#status = val;
-            console.log(`Race ${this.sc} status ${this.#status}`)
+            console.log(`Race ${this.sc} is ${this.#status}`)
         }
     }
 
@@ -47,42 +57,67 @@ class Race {
     }
 
     update(d) {
-        if (Object.hasOwn(d, 'sc_estimated') && (this.status == 'expecting' || ((new Date()).getTime() - this.lastSeen.stream.getTime() > 5000))) {
-            this.lastSeen.api = new Date();
-            if ((new Date()).getTime() - this.start?.getTime() > 60 * 1000) {
-                this.status = 'finished';
-            } else if (d.sc_estimated == 0) {
-                this.status = 'waiting';
-            } else if (d.r1_mtp && d.r1_mtp < 30) {
-                this.status = 'canceled';
+        let statusText = null;
+        const now = new Date().getTime();
+        if (Object.hasOwn(d, 'sc_estimated')) {
+            this.lastSeen.api = now;
+            if (this.status == 'pending' || ((now - this.lastSeen.stream) > 5 * 1000)) {
+                if (now - this.start?.getTime() > 15 * 60 * 1000) {
+                    if (this.status == 'pending') {
+                        this.status = 'deleted';
+                    } else if (this.status != 'deleted') {
+                        this.status = 'deleting';
+                        this.$container.fadeOut(3000, 'swing', () => {
+                            this.status = 'deleted';
+                            this.$container.attr('status', 'deleted');
+                        });
+                    }
+                } else if (now - this.start?.getTime() > 60 * 1000) {
+                    this.status = 'finished';
+                } else if (d.sc_estimated == 0) {
+                    this.status = 'waiting';
+                } else if (d.r1_mtp && d.r1_mtp < 30) {
+                    this.status = 'canceled';
+                }
+                statusText = this.status;
             }
-        }
-
-        if (Object.hasOwn(d, 'R')) {
-            this.lastSeen.stream = new Date();
-            let perc = 0;//Math.round(Math.random() * 100);
+        } else if (Object.hasOwn(d, 'R')) {
+            this.lastSeen.stream = now;
+            let perc = 0;
             let text = '';
             if (!this.P) {
                 this.P = d.P;
             }
             if ((d.P != false && d.P == 0) || d.RS == 'RF') {
                 this.status = 'finished';
+                text = relativeTimeFormat(d.R * 1000);
+                statusText = this.status;
             } else if (d.R > 0 || d.RS == 'IP') {
                 this.status = 'running';
+                statusText = this.status;
                 perc = Math.round(100 - 100 * (d.P / this.P));
                 text = relativeTimeFormat(d.R * 1000);
             } else if (d.LD != false) {
                 this.status = 'loading';
                 perc = parseInt(d.LD);
                 text = `${perc}%`;
+                statusText = this.status;
             } else {
+                statusText = STATUSES[d.MS] ?? 'live';
                 this.status = 'live';
-                text = relativeTimeFormat(this.start?.getTime() - (new Date()).getTime());
+                text = relativeTimeFormat(this.start?.getTime() - now);
+            }
+            if (d.W) {
+                this.status = 'warning';
+                statusText = d.W.join(', ');
             }
             this.$progress.text(text).css('--perc', `${perc}%`);
+
         }
         this.$container.attr('status', this.status);
-        this.$status.text(this.status);
+        if (statusText) {
+            this.$status.text(statusText);
+        }
     }
 }
 
@@ -91,7 +126,7 @@ class RacesStatus {
     static DEBUG = window.location.host.match(/stg/);
     static WS_URL = `wss://stream.tpd.zone/streaming_server`;
     static WS_ZONE = 'zone_1_4';
-    static VERSION = `2024.04.19${RacesStatus.DEBUG ? '-dev' : ''}`;
+    static VERSION = `2024.04.23${RacesStatus.DEBUG ? '-dev' : ''}`;
     races = {};
 
     constructor($o) {
@@ -142,7 +177,7 @@ class RacesStatus {
 
     async update() {
         try {
-            const response = await fetch(`${RacesStatus.API_URL}/status/?date=true`);
+            const response = await fetch(`${RacesStatus.API_URL}/status/?date=now`);
             if (response.status == 200) {
                 const data = await response.json();
                 console.log(`Got ${data.races?.length} races`);
@@ -150,18 +185,10 @@ class RacesStatus {
                     if (!this.races[i.sc]) {
                         const race = new Race(i);
                         this.races[i.sc] = race;
-                        if (race.status != 'finished') {
-                            this.$container.append(race.$container);
-                        }
+                        this.$container.append(race.$container);
                     }
                     this.races[i.sc].update(i);
                 });
-                const now = new Date().getTime();
-                Object.values(this.races).forEach(r => {
-                    if (r.status == 'finished' || now - r.lastSeen.api.getTime() > 60 * 1000) {
-                        //this.delete(r);
-                    }
-                })
                 this.sortRaces();
             } else {
                 console.error(response.statusText);
