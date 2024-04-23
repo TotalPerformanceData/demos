@@ -32,8 +32,8 @@ class Race {
         this.start = new Date(data.date_formatted);
         this.$container = $('<li>').addClass('race').attr('sc', data.sc).data('time', this.start);
         this.$time = $('<div>').addClass('time').text(timeRaceFormat(this.start));
-        this.$name = $('<div>').addClass('name').text(`${data.venue} - ${data.distance.replace(/(^|\s)0[mfy]/g, '')}${data.obstacle == 'Flat' ? ' - Flat' : ''}`);
-        this.$country = $('<div>').addClass(`country fi fi-${data.country.toLowerCase()}`).attr('title', data.country);
+        this.$name = $('<div>').addClass('name').text(`${data.venue} - ${data.distance?.replace(/(^|\s)0[mfy]/g, '')}${data.obstacle == 'Flat' ? ' - Flat' : ''}`);
+        this.$country = $('<div>').addClass(`country fi fi-${data.country?.toLowerCase()}`).attr('title', data.country);
         this.$progress = $('<div>').addClass('progress').text('');
         this.$status = $('<div>').addClass('status').text(this.status);
         this.$container.append(this.$time, this.$country, this.$name, this.$progress, this.$status);
@@ -44,12 +44,12 @@ class Race {
     set status(val) {
         if (this.#status != val) {
             this.#status = val;
-            console.log(`Race ${this.sc} is ${this.#status}`)
+            console.info(`Race ${this.sc} is ${this.#status}`)
         }
     }
 
     delete() {
-        console.log(`Deleting race ${this.sc}`);
+        console.info(`Deleting race ${this.sc}`);
         this.$container.removeClass('appearing').addClass('deleting');
         window.setTimeout((() => {
             this.$container.remove();
@@ -110,6 +110,7 @@ class Race {
             if (d.W) {
                 this.status = 'warning';
                 statusText = d.W.join(', ');
+                console.warn(`${this.sc}: ${statusText}`);
             }
             this.$progress.text(text).css('--perc', `${perc}%`);
 
@@ -130,7 +131,7 @@ class RacesStatus {
     races = {};
 
     constructor($o) {
-        console.log(`Races Status v.${RacesStatus.VERSION}`);
+        console.info(`Races Status v.${RacesStatus.VERSION}`);
         $('h1 .version').text(RacesStatus.VERSION);
         this.$container = $('<ul>').attr('id', 'races');
         $o.append(this.$container);
@@ -140,15 +141,15 @@ class RacesStatus {
     }
 
     startWS() {
-        console.log('Connecting to WS');
+        console.debug('Connecting to WS');
         if (!this.ws) {
             this.ws = new WebSocket(RacesStatus.WS_URL);
             this.ws.onopen = (event) => {
-                console.log('Connected to WS');
+                console.info('Connected to WS');
                 this.ws.send(JSON.stringify([RacesStatus.WS_ZONE]));
             }
             this.ws.onclose = (event) => {
-                console.log('WS closed');
+                console.warn('WS closed');
                 this.ws = null
                 setTimeout(() => {
                     this.startWS();
@@ -180,7 +181,7 @@ class RacesStatus {
             const response = await fetch(`${RacesStatus.API_URL}/status/?date=now`);
             if (response.status == 200) {
                 const data = await response.json();
-                console.log(`Got ${data.races?.length} races`);
+                console.info(`Got ${data.races?.length} races`);
                 (data?.races ?? []).forEach(i => {
                     if (!this.races[i.sc]) {
                         const race = new Race(i);
