@@ -57,6 +57,10 @@ jQuery(document).ready(() => {
             .attr('sc', sc)
             .attr('href', `#${sc}`)
         ));
+        const m = window.location.hash.match(/^#(\w\w\d{12})$/);
+        if(!m?.[1]) {
+            window.location.hash = `#${data.races[0].sc}`
+        }
     }
 
     $('#speed').on('change', () => {
@@ -70,17 +74,20 @@ jQuery(document).ready(() => {
             conponent = null;
         }
         $(`#samples div`).removeClass('selected');
-        $(`#samples div[sc=${$('#sharecode').val()}]`).addClass('selected');
-        window.location.hash = `#${$('#sharecode').val()}`
-        component = await RunnerStatus.create('#container', $('#sharecode').val());
-        if (component) {
-            //$("#stp").parent().toggle(component.type != 'Live');
-            $("#speed").parent().toggle(component.type != 'Live');
-            component.onStatusChange = (status) => {
-                $("#sharecode").attr('disabled', status == RunnerStatus.PlayerStatus.RUNNING);
-                $("#stp").attr('disabled', status == RunnerStatus.PlayerStatus.RUNNING);
+        const sc = $('#sharecode').val();
+        if (sc) {
+            $(`#samples div[sc=${sc}]`).addClass('selected');
+            window.location.hash = `#${sc}`
+            component = await RunnerStatus.create('#container', $('#sharecode').val());
+            if (component) {
+                //$("#stp").parent().toggle(component.type != 'Live');
+                $("#speed").parent().toggle(component.type != 'Live');
+                component.onStatusChange = (status) => {
+                    $("#sharecode").attr('disabled', status == RunnerStatus.PlayerStatus.RUNNING);
+                    $("#stp").attr('disabled', status == RunnerStatus.PlayerStatus.RUNNING);
+                }
+                $('#speed').trigger('change');
             }
-            $('#speed').trigger('change');
         }
     }).trigger('click')
 
