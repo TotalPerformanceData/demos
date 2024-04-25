@@ -44,25 +44,19 @@ jQuery(document).ready(() => {
         if (response.status == 200) {
             data = await response.json();
             if (data?.races) {
-                $('#samples').append(data.races.map(r => $('<div>')
+                $('#samples').append(data.races.map(r => $('<a>')
                     .addClass('live')
                     .attr('sc', r.sc)
                     .text(`${timeRaceFormat.format(new Date(r.date_formatted))} ${r.venue} ${r.obstacle}`)
-                    .on('click', () => {
-                        $('#sharecode').val(r.sc);
-                        $('#samples').hide();
-                        $('#load').click();
-                    })));
+                    .attr('href', `#${r.sc}`)
+                ));
             }
         }
-        $('#samples').append(Object.entries(demo).map(([sc, r]) => $('<div>')
-        .addClass('demo').text(r)
-        .attr('sc', sc)
-        .on('click', () => {
-                        $('#sharecode').val(sc);
-                        $('#samples').hide();
-                        $('#load').click();
-                    })));
+        $('#samples').append(Object.entries(demo).map(([sc, r]) => $('<a>')
+            .addClass('demo').text(r)
+            .attr('sc', sc)
+            .attr('href', `#${sc}`)
+        ));
     }
 
     $('#speed').on('change', () => {
@@ -74,10 +68,10 @@ jQuery(document).ready(() => {
     $('#load').on('click', async () => {
         if (component) {
             conponent = null;
-       
         }
         $(`#samples div`).removeClass('selected');
         $(`#samples div[sc=${$('#sharecode').val()}]`).addClass('selected');
+        window.location.hash = `#${$('#sharecode').val()}`
         component = await RunnerStatus.create('#container', $('#sharecode').val());
         if (component) {
             //$("#stp").parent().toggle(component.type != 'Live');
@@ -89,6 +83,15 @@ jQuery(document).ready(() => {
             $('#speed').trigger('change');
         }
     }).trigger('click')
+
+    $(window).on('hashchange', function () {
+        const m = window.location.hash.match(/^#(\w\w\d{12})$/);
+        if (m && m[1]) {
+            $('#samples').hide();
+            $('#sharecode').val(m[1]);
+            $('#load').click();
+        }
+    })
 
     init();
 
