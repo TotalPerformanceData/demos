@@ -175,7 +175,7 @@ class RacesStatus {
     countries = new Countries($('#countries'), () => { // when countries visibility is changed
         let shown = 0;
         Object.entries(this.races).forEach(([sc, r]) => {
-            const sh = this.countries.isShown(r.$container.attr('country'));
+            const sh = this.countries.isShown(r.$container.attr('country')) && r.status != 'deleting' && r.status != 'deleted';
             if (sh) shown++;
             r.toggle(sh)
         });
