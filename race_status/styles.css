@@ -12,6 +12,10 @@ body {
     box-sizing: border-box;
 }
 
+#container {
+    position: relative;
+}
+
 @keyframes animate-up-in {
     0% {
         margin-top: 3em;
@@ -36,8 +40,8 @@ h1 {
     margin: 0;
     user-select: none;
     animation: animate-up-in 1.5s ease-in-out;
-    line-height: 5rem;
-    font-style: italic;
+    line-height: 6rem;
+    right: .2em;
 }
 
 h1 .version {
@@ -48,12 +52,17 @@ h1 .version {
     top: -1em;
     opacity: 0.2;
     font-weight: normal;
+    display: none;
 }
 
 #logo {
-    width: 1.2em;
-    position: relative;
-    top: 0.33em;
+    width: 20em;
+    position: fixed;
+    top: -5em;
+    right: -0.2em;
+    z-index: -1;
+    color: #000000;
+    opacity: 0.3;
 }
 
 #races {
@@ -68,6 +77,19 @@ h1 .version {
     background-color: #000;
     position: relative;
     border: 1px solid #000;
+    z-index: 88;
+    min-height: 6em;
+}
+
+#races.empty::before {
+    position: absolute;
+    top: 0.7em;
+    left: 0;
+    width: 100%;
+    color: #333;
+    font-size: 2em;
+    content: 'Nothing to show';
+    text-align: center;
 }
 
 
@@ -190,24 +212,68 @@ h1 .version {
     font-weight: bold;
 }
 
+#countries {
+    margin: 0;
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    left: 0.5em;
+    top: 3em;
+    z-index: 1;
+    transition: all 0.5s ease-in-out;
+
+}
+
+#countries li {
+    height: 2em;
+    width: 2em;
+    display: inline-block;
+    cursor: pointer;
+    margin: 0 0.4em;
+    filter: grayscale(1);
+    opacity: 0.3;
+}
+
+#countries:hover {
+    top: 1.5em;
+}
+
+#countries li.shown {
+    filter: grayscale(0);
+    opacity: 1;
+}
+
 @media only screen and (max-width: 800px) {
     body {
         display: block;
         padding: 0;
     }
 
+    #countries {
+        top: -3em;
+        left: 0;
+    }
+
+    #countries:hover {
+        top: -3em;
+    }
+    
+    #logo {
+        display: none;
+    }
+
     #races {
-        width: 100%;
+        width: 99%;
         min-width: auto;
         box-shadow: none;
-        margin: 2em 0;
+        margin: 3em 0;
     }
 
     h1 {
         font-size: 2em;
-        top: -0.5em;
-        text-align: center;
-        width: 100%;
+        top: -2.5em;
     }
 
     #races .race .name {

@@ -22,6 +22,45 @@ const STATUSES = {
     R: 'Running'
 };
 
+class Countries {
+    #countries = {};
+    $container = null;
+    constructor($c, onSwitched) {
+        this.$container = $c;
+        this.$container.on('switched', onSwitched);
+    }
+
+    isOne() {
+        return Object.keys(this.#countries).length == 1;
+    }
+
+    isShown(code) {
+        if (this.isOne()) return true;
+        const cached = localStorage.getItem(`rsc_${code}`);
+        return cached ? (cached == 'true') : true;
+    }
+
+    update() {
+        this.$container.trigger('switched').toggle(!this.isOne());
+        Object.entries(this.#countries).forEach(([code, c]) => c.removeClass('shown').addClass(this.isShown(code) ? 'shown' : 'a'))
+    }
+
+    add(code) {
+        if (!this.#countries[code]) {
+            const that = this;
+            this.#countries[code] = $('<li>')
+                .addClass(`fi fi-${code?.toLowerCase()}`)
+                .attr('title', code)
+                .on('click', function () {
+                    localStorage.setItem(`rsc_${code}`, !that.isShown(code) ? 'true' : 'false')
+                    $(this).removeClass('shown').addClass(that.isShown(code) ? 'shown' : '');
+                    that.update();
+                })
+            this.$container.append(this.#countries[code]);
+        }
+    }
+}
+
 class Race {
     #status = 'pending';
     constructor(data) {
@@ -30,7 +69,7 @@ class Race {
         this.lastSeen = { api: new Date().getTime(), stream: new Date().getTime() };
         this.P = false;
         this.start = new Date(data.date_formatted);
-        this.$container = $('<li>').addClass('race').attr('sc', data.sc).data('time', this.start);
+        this.$container = $('<li>').addClass('race').attr('sc', data.sc).data('time', this.start).attr('country', data.country);
         this.$time = $('<div>').addClass('time').text(timeRaceFormat(this.start));
         this.$name = $('<div>').addClass('name').text(`${data.venue} - ${data.distance?.replace(/(^|\s)0[mfy]/g, '')}${data.obstacle == 'Flat' ? ' - Flat' : ''}`);
         this.$country = $('<div>').addClass(`country fi fi-${data.country?.toLowerCase()}`).attr('title', data.country);
@@ -54,6 +93,10 @@ class Race {
         window.setTimeout((() => {
             this.$container.remove();
         }), 1000)
+    }
+
+    toggle(show) {
+        this.$container.toggle(show);
     }
 
     update(d) {
@@ -129,6 +172,15 @@ class RacesStatus {
     static WS_ZONE = 'zone_1_4';
     static VERSION = `2024.04.23${RacesStatus.DEBUG ? '-dev' : ''}`;
     races = {};
+    countries = new Countries($('#countries'), () => { // when countries visibility is changed
+        let shown = 0;
+        Object.entries(this.races).forEach(([sc, r]) => {
+            const sh = this.countries.isShown(r.$container.attr('country'));
+            if (sh) shown++;
+            r.toggle(sh)
+        });
+        this.$container.removeClass('empty').addClass(shown ? '' : 'empty')
+    });
 
     constructor($o) {
         console.info(`Races Status v.${RacesStatus.VERSION}`);
@@ -184,13 +236,16 @@ class RacesStatus {
                 console.info(`Got ${data.races?.length} races`);
                 (data?.races ?? []).forEach(i => {
                     if (!this.races[i.sc]) {
+                        if (RacesStatus.DEBUG) i.country = Math.random() > 0.3 ? (Math.random() > 0.5 ? 'GB' : 'AE') : i.country;
                         const race = new Race(i);
                         this.races[i.sc] = race;
                         this.$container.append(race.$container);
+                        this.countries.add(i.country);
                     }
                     this.races[i.sc].update(i);
                 });
                 this.sortRaces();
+                this.countries.update();
             } else {
                 console.error(response.statusText);
             }
