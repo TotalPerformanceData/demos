@@ -28,6 +28,9 @@ jQuery(document).ready(() => {
         if (e.keyCode == 13) {
             $('#load').click();
         }
+    }).on('paste', (e) => {
+        $('#samples').hide();
+        $('#load').click();
     }).on('click', () => {
         $('#samples').show();
     }).on('focus', () => {
@@ -41,10 +44,25 @@ jQuery(document).ready(() => {
         if (response.status == 200) {
             data = await response.json();
             if (data?.races) {
-                $('#samples').append(data.races.map(r => $('<div>').addClass('live').text(`${timeRaceFormat.format(new Date(r.date_formatted))} ${r.venue} ${r.obstacle}`).on('click', () => $('#sharecode').val(r.sc))));
+                $('#samples').append(data.races.map(r => $('<div>')
+                    .addClass('live')
+                    .attr('sc', r.sc)
+                    .text(`${timeRaceFormat.format(new Date(r.date_formatted))} ${r.venue} ${r.obstacle}`)
+                    .on('click', () => {
+                        $('#sharecode').val(r.sc);
+                        $('#samples').hide();
+                        $('#load').click();
+                    })));
             }
         }
-        $('#samples').append(Object.entries(demo).map(([sc, r]) => $('<div>').addClass('demo').text(r).on('click', () => $('#sharecode').val(sc))));
+        $('#samples').append(Object.entries(demo).map(([sc, r]) => $('<div>')
+        .addClass('demo').text(r)
+        .attr('sc', sc)
+        .on('click', () => {
+                        $('#sharecode').val(sc);
+                        $('#samples').hide();
+                        $('#load').click();
+                    })));
     }
 
     $('#speed').on('change', () => {
@@ -56,10 +74,13 @@ jQuery(document).ready(() => {
     $('#load').on('click', async () => {
         if (component) {
             conponent = null;
+       
         }
+        $(`#samples div`).removeClass('selected');
+        $(`#samples div[sc=${$('#sharecode').val()}]`).addClass('selected');
         component = await RunnerStatus.create('#container', $('#sharecode').val());
         if (component) {
-            $("#stp").parent().toggle(component.type != 'Live');
+            //$("#stp").parent().toggle(component.type != 'Live');
             $("#speed").parent().toggle(component.type != 'Live');
             component.onStatusChange = (status) => {
                 $("#sharecode").attr('disabled', status == RunnerStatus.PlayerStatus.RUNNING);
