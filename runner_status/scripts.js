@@ -24,13 +24,36 @@ jQuery(document).ready(() => {
 
     let component = null;
 
+    const load = async (sc) => {
+        $('#samples').hide();
+        if (component) {
+            conponent = null;
+        }
+        $(`#samples div`).removeClass('selected');
+        if (sc) {
+            $('#sharecode').val(sc);
+            $(`#samples div[sc=${sc}]`).addClass('selected');
+            component = await RunnerStatus.create('#container', sc);
+            if (component) {
+                //$("#stp").parent().toggle(component.type != 'Live');
+                $("#speed").parent().toggle(component.type != 'Live');
+                component.onStatusChange = (status) => {
+                    $("#sharecode").attr('disabled', status == RunnerStatus.PlayerStatus.RUNNING);
+                    $("#stp").attr('disabled', status == RunnerStatus.PlayerStatus.RUNNING);
+                }
+                $('#speed').trigger('change');
+            }
+        }
+    }
+
+
+
     $('#sharecode').on('keydown', (e) => {
         if (e.keyCode == 13) {
-            $('#load').click();
+            window.location.hash = `#${$('#sharecode').val()}`;
         }
     }).on('paste', (e) => {
-        $('#samples').hide();
-        $('#load').click();
+        window.location.hash = `#${e.originalEvent.clipboardData.getData('text')}`;
     }).on('click', () => {
         $('#samples').show();
     }).on('focus', () => {
@@ -58,8 +81,10 @@ jQuery(document).ready(() => {
             .attr('href', `#${sc}`)
         ));
         const m = window.location.hash.match(/^#(\w\w\d{12})$/);
-        if(!m?.[1]) {
-            window.location.hash = `#${data.races[0].sc}`
+        if (m?.[1]) {
+            load(m?.[1])
+        } else {
+            window.location.hash = `#${data.races[0].sc}`;
         }
     }
 
@@ -69,34 +94,12 @@ jQuery(document).ready(() => {
         }
     }).trigger('change');
 
-    $('#load').on('click', async () => {
-        if (component) {
-            conponent = null;
-        }
-        $(`#samples div`).removeClass('selected');
-        const sc = $('#sharecode').val();
-        if (sc) {
-            $(`#samples div[sc=${sc}]`).addClass('selected');
-            window.location.hash = `#${sc}`
-            component = await RunnerStatus.create('#container', $('#sharecode').val());
-            if (component) {
-                //$("#stp").parent().toggle(component.type != 'Live');
-                $("#speed").parent().toggle(component.type != 'Live');
-                component.onStatusChange = (status) => {
-                    $("#sharecode").attr('disabled', status == RunnerStatus.PlayerStatus.RUNNING);
-                    $("#stp").attr('disabled', status == RunnerStatus.PlayerStatus.RUNNING);
-                }
-                $('#speed').trigger('change');
-            }
-        }
-    }).trigger('click')
+    $('#load').on('click', () => { load($('#sharecode').val()) });
 
     $(window).on('hashchange', function () {
         const m = window.location.hash.match(/^#(\w\w\d{12})$/);
         if (m && m[1]) {
-            $('#samples').hide();
-            $('#sharecode').val(m[1]);
-            $('#load').click();
+            load(m[1]);
         }
     })
 
