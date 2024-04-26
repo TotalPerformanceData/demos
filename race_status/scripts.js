@@ -20,6 +20,7 @@ const STATUSES = {
     GD: { text: 'Going Down', description: 'Horses are traveling down to the post.' },
     AP: { text: 'At the Post', description: 'Horses arrived at the post and are ready to begin the race.' },
     GB: { text: 'Going Behind', description: 'Horses moving forward to the starting gates.' },
+    loading: { text: 'Loading', description: 'Horse is being loaded to the gate.' },
     LG: { text: 'Loading', description: 'Horse is being loaded to the gate.' },
     LD: { text: 'Loading', description: 'Horse has been loaded to the gate.' },
     R: { text: 'Running', description: 'The starting clock signal has been received.' },
@@ -254,6 +255,15 @@ class RacesStatus {
                 });
                 this.sortRaces();
                 this.countries.update();
+                tippy('.status', {
+                    arrow: true,
+                    offset: [0, -10],
+                    duration: [1000, 0],
+                    theme: 'tpd',
+                    onShow: (i) => i.setContent($(i.reference).attr('desc')),
+                    delay: 100,
+                    placement: 'auto-start',
+                });
             } else {
                 console.error(response.statusText);
             }
