@@ -159,7 +159,7 @@ class Race {
                 status = STATUSES[this.status];
             } else {
                 this.status = 'live';
-                status = STATUSES[d.MS];
+                status = STATUSES[d.MS ?? 'live'];
                 text = relativeTimeFormat(this.start?.getTime() - now);
             }
             if (d.W) {
