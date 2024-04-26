@@ -12,15 +12,26 @@ relativeTimeFormat = (mseconds) => `${mseconds < 0 ? '-' : ''}${new Date(Math.ab
 })}`;
 
 const STATUSES = {
-    SD: 'Saddling',
-    PR: 'Parading',
-    GD: 'Going Down',
-    AP: 'At the Post',
-    GB: 'Going Behind',
-    LG: 'Loading',
-    LD: 'Loading',
-    R: 'Running'
+    pending: { text: 'Pending', description: 'Operator is expected on track but not there yet.' },
+    waiting: { text: 'Waiting', description: 'Operator is on the course and ready to transmit the data.' },
+    live: { text: 'Live', description: 'The live data is being received but we are unable to determine race status yet.' },
+    SD: { text: 'Saddling', description: 'Fitting and securing a saddle to prepare for riding' },
+    PR: { text: 'Parading', description: 'Pre-race display in front of spectators within the parade ring.' },
+    GD: { text: 'Going Down', description: 'Horses are traveling down to the post.' },
+    AP: { text: 'At the Post', description: 'Horses arrived at the post and are ready to begin the race.' },
+    GB: { text: 'Going Behind', description: 'Horses moving forward to the starting gates.' },
+    LG: { text: 'Loading', description: 'Horse is being loaded to the gate.' },
+    LD: { text: 'Loading', description: 'Horse has been loaded to the gate.' },
+    R: { text: 'Running', description: 'The starting clock signal has been received.' },
+    running: { text: 'Running', description: 'The starting clock signal has been received.' },
+    finished: { text: 'Finished', description: 'The race leader has crossed the finish line.' },
+    field: { text: 'Field!', description: 'A field assignement warning has been issued. The race data could be wrong.' },
+    clock: { text: 'Clock!', description: 'A clock signal warning has been issued. The race data could be wrong.' },
+    cancelled: { text: 'Cancelled', description: 'The race has been cancelled.' },
+    deleting: { text: 'Deleting', description: 'Deleting the race from the list.' },
+    deleted: { text: 'Deleting', description: 'The race has been deleted from the list.' },
 };
+
 
 class Countries {
     #countries = {};
@@ -100,7 +111,7 @@ class Race {
     }
 
     update(d) {
-        let statusText = null;
+        let status = null;
         const now = new Date().getTime();
         if (Object.hasOwn(d, 'sc_estimated')) {
             this.lastSeen.api = now;
@@ -122,7 +133,7 @@ class Race {
                 } else if (d.r1_mtp && d.r1_mtp < 30) {
                     this.status = 'canceled';
                 }
-                statusText = this.status;
+                status = STATUSES[this.status];
             }
         } else if (Object.hasOwn(d, 'R')) {
             this.lastSeen.stream = now;
@@ -134,34 +145,32 @@ class Race {
             if ((d.P != false && d.P == 0) || d.RS == 'RF') {
                 this.status = 'finished';
                 text = relativeTimeFormat(d.R * 1000);
-                statusText = this.status;
+                status = STATUSES[this.status];
             } else if (d.R > 0 || d.RS == 'IP') {
                 this.status = 'running';
-                statusText = this.status;
+                status = STATUSES[this.status];
                 perc = Math.round(100 - 100 * (d.P / this.P));
                 text = relativeTimeFormat(d.R * 1000);
             } else if (d.LD != false) {
                 this.status = 'loading';
                 perc = parseInt(d.LD);
                 text = `${perc}%`;
-                statusText = this.status;
+                status = STATUSES[this.status];
             } else {
-                statusText = STATUSES[d.MS] ?? 'live';
                 this.status = 'live';
+                status = STATUSES[d.MS];
                 text = relativeTimeFormat(this.start?.getTime() - now);
             }
             if (d.W) {
                 this.status = 'warning';
-                statusText = d.W.join(', ');
-                console.warn(`${this.sc}: ${statusText}`);
+                status = STATUSES[d.W[0].toLowerCase()] ?? { text: d.W[0] };
+                console.warn(`${this.sc}: ${status.text}`);
             }
             this.$progress.text(text).css('--perc', `${perc}%`);
 
         }
         this.$container.attr('status', this.status);
-        if (statusText) {
-            this.$status.text(statusText);
-        }
+        this.$status.text(status?.text ?? this.status).attr('desc', status?.description);
     }
 }
 
@@ -170,7 +179,7 @@ class RacesStatus {
     static DEBUG = window.location.host.match(/stg/);
     static WS_URL = `wss://stream.tpd.zone/streaming_server`;
     static WS_ZONE = 'zone_1_4';
-    static VERSION = `2024.04.23${RacesStatus.DEBUG ? '-dev' : ''}`;
+    static VERSION = RacesStatus.DEBUG ? 'dev' : '2024.04.26';
     races = {};
     countries = new Countries($('#countries'), () => { // when countries visibility is changed
         let shown = 0;
@@ -236,7 +245,6 @@ class RacesStatus {
                 console.info(`Got ${data.races?.length} races`);
                 (data?.races ?? []).forEach(i => {
                     if (!this.races[i.sc]) {
-                        if (RacesStatus.DEBUG) i.country = Math.random() > 0.3 ? (Math.random() > 0.5 ? 'GB' : 'AE') : i.country;
                         const race = new Race(i);
                         this.races[i.sc] = race;
                         this.$container.append(race.$container);
