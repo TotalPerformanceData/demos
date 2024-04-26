@@ -20,9 +20,8 @@ const STATUSES = {
     GD: { text: 'Going Down', description: 'Horses are traveling down to the post.' },
     AP: { text: 'At the Post', description: 'Horses arrived at the post and are ready to begin the race.' },
     GB: { text: 'Going Behind', description: 'Horses moving forward to the starting gates.' },
-    loading: { text: 'Loading', description: 'Horse is being loaded to the gate.' },
-    LG: { text: 'Loading', description: 'Horse is being loaded to the gate.' },
-    LD: { text: 'Loading', description: 'Horse has been loaded to the gate.' },
+    LG: { text: 'Loading', description: 'Horses are being loaded to the gate.' },
+    LD: { text: 'Loaded', description: 'All horses have been loaded to the gate.' },
     R: { text: 'Running', description: 'The starting clock signal has been received.' },
     running: { text: 'Running', description: 'The starting clock signal has been received.' },
     finished: { text: 'Finished', description: 'The race leader has crossed the finish line.' },
@@ -156,7 +155,7 @@ class Race {
                 this.status = 'loading';
                 perc = parseInt(d.LD);
                 text = `${perc}%`;
-                status = STATUSES[this.status];
+                status = STATUSES[perc < 100 ? 'LG' : 'LD'];
             } else {
                 this.status = 'live';
                 status = STATUSES[d.MS ?? 'live'];
