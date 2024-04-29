@@ -143,7 +143,7 @@ class Race {
             if (!this.P) {
                 this.P = d.P;
             }
-            if ((d.P != false && d.P == 0) || d.RS == 'RF') {
+            if ((d.P != false && d.P == 0) || d.RS == 'RF' || d.MS == 'F') {
                 this.status = 'finished';
                 text = relativeTimeFormat(d.R * 1000);
                 status = STATUSES[this.status];
