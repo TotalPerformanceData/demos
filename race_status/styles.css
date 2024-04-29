@@ -129,29 +129,6 @@ h1 .version {
     position: relative;
 }
 
-.tippy-box[data-theme~='tpd'] {
-    background-color: #030;
-    color: #E68000;
-    -webkit-filter: drop-shadow(0px 0px 10px #000000);
-    filter: drop-shadow(0px 0px 10px #000000);
-    font-size: 16px;
-}
-
-.tippy-box[data-theme~='tpd'][data-placement^='top']>.tippy-arrow::before {
-    border-top-color: #030;
-}
-
-.tippy-box[data-theme~='tpd'][data-placement^='bottom']>.tippy-arrow::before {
-    border-bottom-color: #030;
-}
-
-.tippy-box[data-theme~='tpd'][data-placement^='left']>.tippy-arrow::before {
-    border-left-color: #030;
-}
-
-.tippy-box[data-theme~='tpd'][data-placement^='right']>.tippy-arrow::before {
-    border-right-color: #030;
-}
 
 #races .race .progress {
     min-width: 6em;
@@ -224,7 +201,7 @@ h1 .version {
 }
 
 #races .race[status="deleted"] {
-    display: none;
+    --display: none;
 }
 
 #races .race[status="finished"] .country {

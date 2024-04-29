@@ -85,7 +85,7 @@ class Race {
         this.$name = $('<div>').addClass('name').text(`${data.venue} - ${data.distance?.replace(/(^|\s)0[mfy]/g, '')}${data.obstacle == 'Flat' ? ' - Flat' : ''}`);
         this.$country = $('<div>').addClass(`country fi fi-${data.country?.toLowerCase()}`).attr('title', data.country);
         this.$progress = $('<div>').addClass('progress').text('');
-        this.$status = $('<div>').addClass('status').text(this.status);
+        this.$status = $('<div>').addClass('status').text(this.status).tooltipster({ animation: 'fade', delay: 200 });
         this.$container.append(this.$time, this.$country, this.$name, this.$progress, this.$status);
         this.update(data);
     }
@@ -121,10 +121,11 @@ class Race {
                         this.status = 'deleted';
                     } else if (this.status != 'deleted') {
                         this.status = 'deleting';
-                        this.$container.fadeOut(3000, 'swing', () => {
+                        this.$container.animate({ opacity: 0 }, 1000, "linear", function () {
                             this.status = 'deleted';
                             this.$container.attr('status', 'deleted');
                         });
+                        return;
                     }
                 } else if (now - this.start?.getTime() > 60 * 1000) {
                     this.status = 'finished';
@@ -170,7 +171,7 @@ class Race {
 
         }
         this.$container.attr('status', this.status);
-        this.$status.text(status?.text ?? this.status).attr('desc', status?.description);
+        this.$status.text(status?.text ?? this.status).tooltipster('content', status?.description);
     }
 }
 
@@ -254,15 +255,6 @@ class RacesStatus {
                 });
                 this.sortRaces();
                 this.countries.update();
-                tippy('.status', {
-                    arrow: true,
-                    offset: [0, -10],
-                    duration: [1000, 0],
-                    theme: 'tpd',
-                    onShow: (i) => i.setContent($(i.reference).attr('desc')),
-                    delay: 100,
-                    placement: 'auto-start',
-                });
             } else {
                 console.error(response.statusText);
             }
