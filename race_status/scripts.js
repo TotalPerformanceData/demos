@@ -25,8 +25,8 @@ const STATUSES = {
     R: { text: 'Running', description: 'The starting clock signal has been received.' },
     running: { text: 'Running', description: 'The starting clock signal has been received.' },
     finished: { text: 'Finished', description: 'The race leader has crossed the finish line.' },
-    field: { text: 'Field!', description: 'A field assignement warning has been issued. The race data could be wrong.' },
-    clock: { text: 'Clock!', description: 'A clock signal warning has been issued. The race data could be wrong.' },
+    field: { text: 'Field!', description: 'A field assignement warning has been issued. The data could be wrong.' },
+    clock: { text: 'Clock!', description: 'A clock signal warning has been issued. The data could be wrong.' },
     cancelled: { text: 'Cancelled', description: 'The race has been cancelled.' },
     deleting: { text: 'Deleting', description: 'Deleting the race from the list.' },
     deleted: { text: 'Deleting', description: 'The race has been deleted from the list.' },
@@ -77,7 +77,7 @@ class Countries {
 }
 
 class Race {
-    #status = 'pending';
+    #status = null;
     constructor(data) {
         this.sc = data.sc;
         console.debug(`New race ${data.sc}`);
@@ -89,16 +89,19 @@ class Race {
         this.$name = $('<div>').addClass('name').text(`${data.venue} - ${data.distance?.replace(/(^|\s)0[mfy]/g, '')}${data.obstacle == 'Flat' ? ' - Flat' : ''}`);
         this.$country = $('<div>').addClass(`country fi fi-${data.country?.toLowerCase()}`).attr('title', data.country);
         this.$progress = $('<div>').addClass('progress').text('');
-        this.$status = $('<div>').addClass('status').text(this.status).tooltipster({ animation: 'fade', delay: 200 });
+        this.$status = $('<div>').addClass('status').tooltipster({ animation: 'fade', delay: 200 });
         this.$container.append(this.$time, this.$country, this.$name, this.$progress, this.$status);
         this.update(data);
     }
 
-    get status() { return this.#status }
+    get status() { return this.#status ?? 'pending' }
     set status(val) {
-        if (this.#status != val) {
+        if (val && this.#status != val) {
             this.#status = val;
-            console.info(`Race ${this.sc} is ${this.#status}`)
+            const status = STATUSES[val] ?? STATUSES['pending'];
+            this.$container.attr('status', val);
+            this.$status.text(status.text ?? '').tooltipster('content', status?.description);
+            console.info(`Race ${this.sc} is ${status.text}`)
         }
     }
 
@@ -115,30 +118,30 @@ class Race {
     }
 
     update(d) {
-        let status = null;
+        let status = this.status;
         const now = new Date().getTime();
         if (Object.hasOwn(d, 'sc_estimated')) {
             this.lastSeen.api = now;
-            if (this.status == 'pending' || ((now - this.lastSeen.stream) > 5 * 1000)) {
+            if (status == 'pending' || ((now - this.lastSeen.stream) > 5 * 1000)) {
                 if (now - this.start?.getTime() > 15 * 60 * 1000) {
-                    if (this.status == 'pending') {
-                        this.status = 'deleted';
-                    } else if (this.status != 'deleted') {
-                        this.status = 'deleting';
-                        this.$container.animate({ opacity: 0 }, 1000, "linear", function () {
-                            this.status = 'deleted';
-                            this.$container.attr('status', 'deleted');
+                    if (status == 'pending') {
+                        status = 'deleted';
+                    } else if (status != 'deleted') {
+                        status = 'deleting';
+                        const self = this;
+                        this.$container.animate({ top: '3em', opacity: 0 }, 1000, "linear", function () {
+                            status = 'deleted';
+                            self.$container.attr('status', 'deleted');
                         });
                         return;
                     }
                 } else if (now - this.start?.getTime() > 60 * 1000) {
-                    this.status = 'finished';
+                    status = 'finished';
                 } else if (d.sc_estimated == 0) {
-                    this.status = 'waiting';
+                    status = 'waiting';
                 } else if (d.r1_mtp && d.r1_mtp < 30) {
-                    this.status = 'canceled';
+                    status = 'canceled';
                 }
-                status = STATUSES[this.status];
             }
         } else if (Object.hasOwn(d, 'R')) {
             this.lastSeen.stream = now;
@@ -148,34 +151,28 @@ class Race {
                 this.P = d.P;
             }
             if ((d.P != false && d.P == 0) || d.RS == 'RF' || d.MS == 'F') {
-                this.status = 'finished';
+                status = 'finished';
                 text = relativeTimeFormat(d.R * 1000);
-                status = STATUSES[this.status];
             } else if (d.R > 0 || d.RS == 'IP') {
-                this.status = 'running';
-                status = STATUSES[this.status];
+                status = 'running';
                 perc = Math.round(100 - 100 * (d.P / this.P));
                 text = relativeTimeFormat(d.R * 1000);
             } else if (d.LD != false) {
-                this.status = 'loading';
                 perc = parseInt(d.LD);
                 text = `${perc}%`;
-                status = STATUSES[perc < 100 ? 'LG' : 'LD'];
+                status = perc < 100 ? 'LG' : 'LD';
             } else {
-                this.status = 'live';
-                status = STATUSES[d.MS ?? 'live'];
+                status = d.MS ?? status;
                 text = relativeTimeFormat(this.start?.getTime() - now);
             }
             if (d.W) {
-                this.status = 'warning';
-                status = STATUSES[d.W[0].toLowerCase()] ?? { text: d.W[0] };
-                console.warn(`${this.sc}: ${status.text}`);
+                status = d.W[0].toLowerCase() ?? 'warning';
+                console.warn(`${this.sc}: ${status}`);
             }
             this.$progress.text(text).css('--perc', `${perc}%`);
 
         }
-        this.$container.attr('status', this.status);
-        this.$status.text(status?.text ?? this.status).tooltipster('content', status?.description);
+        this.status = status;
     }
 }
 
