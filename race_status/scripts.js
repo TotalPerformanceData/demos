@@ -42,11 +42,15 @@ class Countries {
     }
 
     isOne() {
-        return Object.keys(this.#countries).length == 1;
+        return RacesStatus.EQUIBASE || Object.keys(this.#countries).length == 1;
     }
 
     isShown(code) {
-        if (this.isOne()) return true;
+        if (RacesStatus.EQUIBASE) {
+            return code == 'US';
+        } else if (this.isOne()) {
+            return true;
+        }
         const cached = localStorage.getItem(`rsc_${code}`);
         return cached ? (cached == 'true') : true;
     }
@@ -181,6 +185,7 @@ class RacesStatus {
     static WS_URL = `wss://stream.tpd.zone/streaming_server`;
     static WS_ZONE = 'zone_1_4';
     static VERSION = RacesStatus.DEBUG ? 'dev' : '2024.04.26';
+    static EQUIBASE = !!(window.location.search || window.location.hash).match(/equibase/);
     races = {};
     countries = new Countries($('#countries'), () => { // when countries visibility is changed
         let shown = 0;
@@ -200,6 +205,7 @@ class RacesStatus {
         this.update();
         this.interval = window.setInterval(this.update.bind(this), 60 * 1000);
         this.startWS();
+        $('#equibase').toggle(RacesStatus.EQUIBASE);
     }
 
     startWS() {
