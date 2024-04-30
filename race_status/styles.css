@@ -299,6 +299,7 @@ h1 .version {
     body {
         display: block;
         padding: 0;
+        font-size: 0.7em;
     }
 
     #countries {
@@ -316,10 +317,12 @@ h1 .version {
 
     #equibase {
         top: -3em;
+        max-width: 50%;
     }
 
     #races {
         width: 99%;
+        max-width: 99%;
         min-width: auto;
         box-shadow: none;
         margin: 3em 0;
@@ -327,7 +330,7 @@ h1 .version {
 
     h1 {
         font-size: 2em;
-        top: -2.5em;
+        top: -3em;
     }
 
     #races .race .name {
