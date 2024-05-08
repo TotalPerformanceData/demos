@@ -86,7 +86,7 @@ class Race {
         this.start = new Date(data.date_formatted);
         this.$container = $('<li>').addClass('race').attr('sc', data.sc).data('time', this.start).attr('country', data.country);
         this.$time = $('<div>').addClass('time').text(timeRaceFormat(this.start));
-        this.$name = $('<div>').addClass('name').text(`${data.venue} - ${data.distance?.replace(/(^|\s)0[mfy]/g, '')}${data.obstacle == 'Flat' ? ' - Flat' : ''}`);
+        this.$name = $('<div>').addClass('name').text(`${data.venue} ${(data.distance ?? '').replace(/(^|\s)0[mfy]/g, '')}${data.obstacle == 'Flat' ? ' - Flat' : ''}`);
         this.$country = $('<div>').addClass(`country fi fi-${data.country?.toLowerCase()}`).attr('title', data.country);
         this.$progress = $('<div>').addClass('progress').text('');
         this.$status = $('<div>').addClass('status').tooltipster({ animation: 'fade', delay: 200 });
