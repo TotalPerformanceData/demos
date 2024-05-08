@@ -208,7 +208,9 @@ h1 .version {
 }
 
 #races .race[status="canceled"] {
-    color: #900;
+    color: #E20;
+    text-decoration: line-through;
+   
 }
 
 

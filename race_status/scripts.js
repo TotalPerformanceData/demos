@@ -27,7 +27,7 @@ const STATUSES = {
     finished: { text: 'Finished', description: 'The race leader has crossed the finish line.' },
     field: { text: 'Field!', description: 'A field assignement warning has been issued. The data could be wrong.' },
     clock: { text: 'Clock!', description: 'A clock signal warning has been issued. The data could be wrong.' },
-    cancelled: { text: 'Cancelled', description: 'The race has been cancelled.' },
+    canceled: { text: 'Cancelled', description: 'The race has been cancelled.' },
     deleting: { text: 'Deleting', description: 'Deleting the race from the list.' },
     deleted: { text: 'Deleting', description: 'The race has been deleted from the list.' },
 };
@@ -123,7 +123,7 @@ class Race {
         if (Object.hasOwn(d, 'sc_estimated')) {
             this.lastSeen.api = now;
             if (status == 'pending' || ((now - this.lastSeen.stream) > 5 * 1000)) {
-                if (now - this.start?.getTime() > 15 * 60 * 1000) {
+                if (now - this.start?.getTime() > 10 * 60 * 1000) {
                     if (status == 'pending') {
                         status = 'deleted';
                     } else if (status != 'deleted') {
