@@ -4,6 +4,8 @@ jQuery(document).ready(() => {
         $("#version").text(`v.${RunnerStatus.VERSION}`);
     }
     const timeRaceFormat = new Intl.DateTimeFormat('en-GB', {
+        day: 'numeric',
+        month: 'short',
         hour: 'numeric',
         minute: 'numeric'
     });
@@ -63,12 +65,12 @@ jQuery(document).ready(() => {
     })
 
     const init = async () => {
-        const response = await fetch(`${public_api}/status/?date=now`);
+        const response = await fetch(`${public_api}/status/?date=24h`);
         if (response.status == 200) {
             data = await response.json();
             if (data?.races) {
                 $('#samples').append(data.races.map(r => $('<a>')
-                    .addClass('live')
+                    .addClass(r.r1_mtp < 0 ? 'demo' : 'live')
                     .attr('sc', r.sc)
                     .text(`${timeRaceFormat.format(new Date(r.date_formatted))} ${r.venue} ${r.obstacle}`)
                     .attr('href', `#${r.sc}`)
