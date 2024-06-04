@@ -273,6 +273,7 @@ class RunnerStatusLive extends RunnerStatus {
     $connected = null;
     #interval = null;
     #clientKey = null;
+    #vendorKey = null;
 
     static ConnectionStatus = {
         Offline: 'offline',
@@ -290,6 +291,7 @@ class RunnerStatusLive extends RunnerStatus {
             data = await response.json();
             if (data?.clientKey && data?.runners) {
                 this.#clientKey = data.clientKey;
+                this.#vendorKey = data.vendorKey;
                 return this.connect(data);
             }
         }
@@ -353,7 +355,7 @@ class RunnerStatusLive extends RunnerStatus {
                             if (message.open_markets?.includes(this.sc)) {
                                 this.ws.send(
                                     JSON.stringify({
-                                        vendorKey: this.#clientKey, // client is the temporary vendor
+                                        vendorKey: this.#vendorKey, // client is the temporary vendor
                                         clientKey: this.#clientKey,
                                         sc: [this.sc],
                                         inc: ['RS'], // will be ignored and set to ['RS'] on server side for security reason
