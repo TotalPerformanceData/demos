@@ -65,15 +65,19 @@ jQuery(document).ready(() => {
     })
 
     const init = async () => {
+        const now = new Date().getTime();
         const response = await fetch(`${public_api}/status/?date=24h`);
         if (response.status == 200) {
             data = await response.json();
             if (data?.races) {
-                $('#samples').append(data.races.map(r => $('<a>')
-                    .addClass(r.r1_mtp < 0 ? 'demo' : 'live')
-                    .attr('sc', r.sc)
-                    .text(`${timeRaceFormat.format(new Date(r.date_formatted))} ${r.venue} ${r.obstacle}`)
-                    .attr('href', `#${r.sc}`)
+                $('#samples').append(data.races.map(r => {
+                    const start = new Date(r.date_formatted);
+                    return $('<a>')
+                        .addClass(start.getTime() - now < 0 ? 'demo' : 'live')
+                        .attr('sc', r.sc)
+                        .text(`${timeRaceFormat.format(start)} ${r.venue} ${r.obstacle}`)
+                        .attr('href', `#${r.sc}`)
+                }
                 ));
             }
         }
