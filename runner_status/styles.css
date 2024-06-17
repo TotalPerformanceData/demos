@@ -64,7 +64,8 @@ body {
   background-image: url('data:image/svg+xml,<svg fill="%23000000" width="800px" height="800px" viewBox="0 0 24 24" id="Outline" xmlns="http://www.w3.org/2000/svg"><title>194 restore</title><path d="M12,6a1,1,0,0,0-1,1v5a1,1,0,0,0,.293.707l3,3a1,1,0,0,0,1.414-1.414L13,11.586V7A1,1,0,0,0,12,6ZM23.812,10.132A12,12,0,0,0,3.578,3.415V1a1,1,0,0,0-2,0V5a2,2,0,0,0,2,2h4a1,1,0,0,0,0-2H4.827a9.99,9.99,0,1,1-2.835,7.878A.982.982,0,0,0,1,12a1.007,1.007,0,0,0-1,1.1,12,12,0,1,0,23.808-2.969Z"/></svg>');
 }
 
-#samples a:hover, #samples a.selected {
+#samples a:hover,
+#samples a.selected {
   background-color: #ff6600;
 }
 
@@ -198,6 +199,25 @@ body {
   width: 1em;
 }
 
+#runner_status .race .ascot {
+  display: inline-block;
+  position: relative;
+  width: 6em;
+}
+
+#runner_status .race .ascot img {
+  position: absolute;
+  height: 2em;
+  top: -1em;
+  left: 1em;
+}
+
+#runner_status tbody.ascot {
+background-image: url('ascot_vert.svg');
+background-size: 70% 90%;
+background-position: center center;
+background-repeat: no-repeat;
+}
 
 #runner_status .right span.control.paused {
   background-image: url('data:image/svg+xml,<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21.4086 9.35258C23.5305 10.5065 23.5305 13.4935 21.4086 14.6474L8.59662 21.6145C6.53435 22.736 4 21.2763 4 18.9671L4 5.0329C4 2.72368 6.53435 1.26402 8.59661 2.38548L21.4086 9.35258Z" fill="%233c6534"/></svg>');
@@ -324,7 +344,9 @@ body {
 
 
 @media only screen and (max-width: 800px) {
-  #runner_status .stall, #runner_status .name {
+
+  #runner_status .stall,
+  #runner_status .name {
     display: none;
   }
 

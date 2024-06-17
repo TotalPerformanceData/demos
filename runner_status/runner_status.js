@@ -15,7 +15,7 @@ class RunnerStatus {
             "color: #fff",
             "background-color: #090",
             "padding: 2px 4px",
-           "margin-right: 0.5em"
+            "margin-right: 0.5em"
         ].join(";"),
         normal: [
             "color: auto",
@@ -170,7 +170,7 @@ class RunnerStatus {
         this.log(`Loading <b>${data.sc}</b>. Got <b>${Object.keys(data.runners).length}</b> runners. Post time: <b>${RunnerStatus.dateTimeFormat.format(new Date(`${data.post_time}+00:00`))}</b>`)
         this.$race.html('').append([
             $('<span>').addClass(`fi fi-${data.country.toLowerCase()}`),
-            $('<span>').text(RunnerStatus.racecourses[data.racecourse] ?? data.racecourse),
+            $('<span>').addClass('racecourse').text(RunnerStatus.racecourses[data.racecourse] ?? data.racecourse),
             $('<span>').addClass('post_time').attr('date_full', RunnerStatus.dateTimeFormat.format(new Date(`${data.post_time}+00:00`)))
                 .attr('date_short', RunnerStatus.dateTimeShortFormat.format(new Date(`${data.post_time}+00:00`))),
             $('<span>').text(data.distance.replace(/(^|\s)0\w(\s|$)/g, '$2')).attr('title', 'Race distance'),
@@ -212,6 +212,10 @@ class RunnerStatus {
             parent.append($('<div>').addClass('silks').addClass('r').addClass(`silks_${+cl}`).text(cl));
         })
         this.sortRunners('cl')
+        if (data.racecourse == 'Asc') {
+            this.$runners.$tbody.addClass('ascot');
+            this.$race.find('.racecourse')?.addClass(`ascot`).text('').append($('<img>').attr('src', 'ascot_hor.svg'));
+        }
     }
 
     runnerFirstStatusTime(rr, s) {
