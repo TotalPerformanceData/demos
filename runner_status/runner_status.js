@@ -213,7 +213,7 @@ class RunnerStatus {
         })
         this.sortRunners('cl')
         if (data.racecourse == 'Asc') {
-            this.$runners.$tbody.addClass('ascot');
+            this.$runners.addClass('ascot');
             this.$race.find('.racecourse')?.addClass(`ascot`).text('').append($('<img>').attr('src', 'ascot_hor.svg'));
         }
     }
