@@ -7,7 +7,7 @@ header('Content-type: application/json');
 if (isset($k) && isset($vk) && isset($_GET['sc'])) {
     $data = file_get_contents($target . "/json-rpc/v2/vendors/streaming_request/?mode={$_GET['mode']}&sc={$_GET['sc']}&ip={$_SERVER['REMOTE_ADDR']}&k={$k}");
     $d = json_decode($data, true);
-    $d['vendorKey'] = "15b27927b4ca444840a94d75b4e253ab"; // TODO
+    $d['vendorKey'] = "";
     echo json_encode($d);
 } else {
     echo '[]';
