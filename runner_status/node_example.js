@@ -10,7 +10,7 @@ const CLIENT_KEY = process.env.CLIENT_KEY ?? '';
 async function main() {
 
     try {
-        const response = await fetch('https://stg.tpd.zone/json-rpc/v2/status/?date=today');
+        const response = await fetch('https://www.tpd.zone/json-rpc/v2/status/?date=today');
         if (response.status == 200) {
             const json = await response.json();
             //console.log(json); // Races sharecode to info
