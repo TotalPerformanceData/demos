@@ -1,6 +1,6 @@
 class RunnerStatus {
     static API_URL = "/demos/api/php";
-    static SILKS_URL = 'https://d5r512lauia4d.cloudfront.net/';
+    static SILKS_URL = 'https://silks.tpd.zone/';
     static DEBUG = window.location.host.match(/stg/);
     static WS_URL = `wss://stream.tpd.zone/realtime_${RunnerStatus.DEBUG ? 'ws_dev' : '1.4'}`
     static VERSION = `2024.03.19${RunnerStatus.DEBUG ? '-dev' : ''}`;
